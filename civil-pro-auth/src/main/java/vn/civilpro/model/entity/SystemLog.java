@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(
-        name = "SYSTEM_LOGS", // Tên bảng HOA
+        name = "SYSTEM_LOGS",
         indexes = {
                 @Index(name = "IDX_LOG_USER",       columnList = "PERFORMED_BY"),
                 @Index(name = "IDX_LOG_CREATED_AT",  columnList = "CREATED_AT"),
@@ -49,11 +49,11 @@ public class SystemLog {
     @Column(name = "IP_ADDRESS", length = 45)
     private String ipAddress;
 
-    @Column(name = "LOG_LEVEL", nullable = false, length = 20) // Đổi từ level sang LOG_LEVEL
+    @Column(name = "LOG_LEVEL", nullable = false, length = 20)
     @Builder.Default
     private String logLevel = "INFO";
 
-    @Column(name = "CREATED_AT", nullable = false) // Đổi từ timestamp sang CREATED_AT cho đồng bộ hệ thống
+    @Column(name = "CREATED_AT", nullable = false)
     @Builder.Default
     private LocalDateTime createdAt = LocalDateTime.now();
 
@@ -98,4 +98,6 @@ public class SystemLog {
                 .build();
     }
 
+    public void error(String failedToSaveSystemLog, Exception e) {
+    }
 }

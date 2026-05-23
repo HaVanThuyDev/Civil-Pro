@@ -16,7 +16,7 @@ import vn.civilpro.service.impl.AuthServiceImpl;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/api/v1/auth")
+@RequestMapping("/auth")
 @RequiredArgsConstructor
 public class AuthController {
 
@@ -28,7 +28,7 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    @PreAuthorize("hasAuthority('USER_CREATE')")
+//    @PreAuthorize("hasAuthority('USER_CREATE')")
     public ResponseEntity<?> register(@Valid @RequestBody RegisterRequest req,
                                       @AuthenticationPrincipal UserDetails user) {
         String creator = Optional.ofNullable(user).map(UserDetails::getUsername).orElse("SYSTEM");

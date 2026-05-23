@@ -26,15 +26,6 @@ spring:
     locations: classpath:db/migration
     baseline-on-migrate: true
 
-  data:
-    redis:
-      host: redis-13181.c9.us-east-1-2.ec2.cloud.redislabs.com
-      port: 13181
-      username: default
-      password: nB7VJSAt4wPLZAhgi2aZEPsMHXiPh4cA
-      ssl:
-        enabled: true
-      database: 0
 
 eureka:
   client:
