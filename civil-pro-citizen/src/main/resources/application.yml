@@ -1,0 +1,157 @@
+# ================================================================
+# CIVIL-PRO - CÔNG DÂN SERVICE
+# application.yml - Cấu hình chính
+# ================================================================
+server:
+  port: 8082
+  servlet:
+    context-path: /api
+
+spring:
+  application:
+    name: civil-pro-cong-dan
+
+  # Config Server: load config từ trung tâm trước
+  config:
+    import: "optional:configserver:http://localhost:8888"
+
+  # ---- Database ----
+  datasource:
+    url: jdbc:mysql://localhost:3306/DB_CONG_DAN?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Ho_Chi_Minh&rewriteBatchedStatements=true
+    username: ${DB_USERNAME:civil}
+    password: ${DB_PASSWORD:civilpro123}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    hikari:
+      pool-name: CongDan-HikariPool
+      maximum-pool-size: 20          # Tối đa 20 connection
+      minimum-idle: 5
+      idle-timeout: 300000           # 5 phút
+      connection-timeout: 20000      # 20 giây
+      max-lifetime: 1200000          # 20 phút
+
+  jpa:
+    hibernate:
+      ddl-auto: validate             # KHÔNG tự tạo table - dùng Flyway
+    show-sql: false                  # Tắt trong production, bật khi debug
+    open-in-view: false              # Tắt OSIV để tránh N+1 ẩn
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL8Dialect
+        format_sql: true
+        jdbc:
+          batch_size: 50             # Batch insert/update
+          order_inserts: true
+          order_updates: true
+        cache:
+          use_second_level_cache: false  # Dùng Redis thay thế
+
+  # ---- Flyway: chạy migration khi start ----
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+    baseline-on-migrate: true
+    validate-on-migrate: true
+
+  # ---- Redis ----
+  data:
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
+      password: ${REDIS_PASSWORD:}
+      database: 0                    # DB 0 cho cong-dan service
+      lettuce:
+        pool:
+          max-active: 10
+          max-idle: 5
+          min-idle: 1
+          max-wait: 2000ms
+      timeout: 2000ms
+
+  # ---- Kafka ----
+  kafka:
+    bootstrap-servers: ${KAFKA_SERVERS:localhost:9092}
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+      acks: all                      # Đảm bảo message được ghi vào tất cả replica
+      retries: 3
+      properties:
+        spring.json.add.type.headers: false
+    consumer:
+      group-id: civil-pro-cong-dan-group
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties:
+        spring.json.trusted.packages: "vn.civil.*"
+
+# ---- gRPC Server (nhận request từ service khác) ----
+grpc:
+  server:
+    port: 9082                       # gRPC port riêng, khác REST port
+    enable-reflection: true          # Cho phép grpcurl introspect (dev only)
+  # gRPC Client: kết nối đến các service khác
+  client:
+    dvhc-service:                    # Bean name khi inject @GrpcClient("dvhc-service")
+      address: discovery:///civil-pro-dvhc   # Tự resolve qua Eureka
+      negotiation-type: plaintext
+
+# ---- Eureka Service Discovery ----
+eureka:
+  client:
+    service-url:
+      defaultZone: ${EUREKA_URL:http://localhost:8761/eureka}
+    register-with-eureka: true
+    fetch-registry: true
+  instance:
+    prefer-ip-address: true
+    instance-id: ${spring.application.name}:${server.port}
+    health-check-url-path: /api/actuator/health
+
+# ---- Actuator endpoints ----
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus
+      base-path: /actuator
+  endpoint:
+    health:
+      show-details: when_authorized
+  metrics:
+    tags:
+      application: ${spring.application.name}
+  # Zipkin tracing
+  tracing:
+    sampling:
+      probability: 1.0               # 100% sample trong dev, giảm trong prod
+  zipkin:
+    tracing:
+      endpoint: ${ZIPKIN_URL:http://localhost:9411/api/v2/spans}
+
+# ---- JWT Config (validate token từ Auth Service) ----
+civil-pro:
+  jwt:
+    secret: ${JWT_SECRET:change-this-in-production-use-256-bit-key}
+    expiration: 86400000             # 24 giờ (ms)
+
+  # Kafka Topics
+  kafka:
+    topics:
+      cong-dan-created: cong-dan.created
+      cong-dan-updated: cong-dan.updated
+      cong-dan-khai-tu: cong-dan.khai-tu
+
+  # Redis Cache TTL config
+  cache:
+    cong-dan-ttl: 3600               # 1 giờ
+    cccd-lookup-ttl: 1800            # 30 phút
+
+# ---- Logging ----
+logging:
+  level:
+    vn.civilpro: DEBUG
+    org.springframework.security: WARN
+    org.hibernate.SQL: WARN          # Đặt DEBUG để xem SQL
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} [%thread] [%X{traceId}/%X{spanId}] %-5level %logger{36} - %msg%n"

@@ -1,0 +1,50 @@
+# ================================================================
+# PROMETHEUS CONFIGURATION
+# Scrape metrics từ tất cả microservices
+# ================================================================
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+  external_labels:
+    system: civil-pro
+
+scrape_configs:
+  - job_name: 'civil-pro-gateway'
+    metrics_path: /actuator/prometheus
+    static_configs:
+      - targets: ['gateway:8080']
+
+  - job_name: 'civil-pro-auth'
+    metrics_path: /api/actuator/prometheus
+    static_configs:
+      - targets: ['auth-service:8081']
+
+  - job_name: 'civil-pro-cong-dan'
+    metrics_path: /api/actuator/prometheus
+    static_configs:
+      - targets: ['cong-dan-service:8082']
+
+  - job_name: 'civil-pro-ho-khau'
+    metrics_path: /api/actuator/prometheus
+    static_configs:
+      - targets: ['ho-khau-service:8083']
+
+  - job_name: 'civil-pro-cu-tru'
+    metrics_path: /api/actuator/prometheus
+    static_configs:
+      - targets: ['cu-tru-service:8084']
+
+  - job_name: 'civil-pro-bien-dong'
+    metrics_path: /api/actuator/prometheus
+    static_configs:
+      - targets: ['bien-dong-service:8085']
+
+  - job_name: 'civil-pro-thong-ke'
+    metrics_path: /api/actuator/prometheus
+    static_configs:
+      - targets: ['thong-ke-service:8086']
+
+  - job_name: 'civil-pro-dong-bo'
+    metrics_path: /api/actuator/prometheus
+    static_configs:
+      - targets: ['dong-bo-service:8087']

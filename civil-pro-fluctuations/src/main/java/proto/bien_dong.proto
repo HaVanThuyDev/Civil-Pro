@@ -1,0 +1,115 @@
+syntax = "proto3";
+
+// ================================================================
+// CIVIL-PRO — BIẾN ĐỘNG DÂN CƯ SERVICE PROTO
+//
+// Caller  : ThongKeService, DongBoService
+// Provider: civil-pro-bien-dong  (gRPC port 9085)
+//
+// Package java : vn.civilpro.grpc.biendong
+// ================================================================
+
+package civilpro.biendong;
+
+option java_multiple_files  = true;
+option java_package         = "vn.civil.grpc.biendong";
+option java_outer_classname = "BienDongProto";
+
+import "common.proto";
+
+// ================================================================
+// DATA MESSAGES
+// ================================================================
+
+// Một sự kiện biến động dân cư
+message BienDongInfo {
+    int64  id               = 1;
+    string ma_bien_dong     = 2;
+    string loai_bien_dong   = 3;   // SINH/TU/NHAP_CU/XUAT_CU/DI_CU_NOI_BO
+    int64  id_cong_dan      = 4;   // 0 nếu chưa có hồ sơ
+    string ho_ten           = 5;
+    string ma_dvhc          = 6;
+    string ngay_bien_dong   = 7;   // ISO: yyyy-MM-dd
+    int32  thang            = 8;
+    int32  nam              = 9;
+    string mo_ta            = 10;
+}
+
+// Tổng hợp biến động theo tháng (dùng cho Line chart Dashboard)
+message ThongKeBienDongThang {
+    string ma_dvhc      = 1;
+    int32  thang        = 2;
+    int32  nam          = 3;
+    int64  so_sinh      = 4;
+    int64  so_tu        = 5;
+    int64  so_nhap_cu   = 6;
+    int64  so_xuat_cu   = 7;
+    int64  tang_truong  = 8;   // = sinh - tử
+}
+
+// ================================================================
+// REQUEST MESSAGES
+// ================================================================
+
+// Lấy thống kê biến động theo tháng cho chart
+message GetThongKeTheoThangRequest {
+    string ma_dvhc  = 1;   // Rỗng = toàn tỉnh
+    int32  nam      = 2;
+    int32  tu_thang = 3;   // 1-12
+    int32  den_thang = 4;  // 1-12
+}
+
+// Lấy danh sách biến động theo khoảng thời gian
+message GetBienDongRequest {
+    string ma_dvhc         = 1;
+    string loai_bien_dong  = 2;   // Rỗng = tất cả loại
+    civilpro.common.DateRange date_range = 3;
+    civilpro.common.PageRequest page = 4;
+}
+
+// Tổng số sinh/tử trong năm theo ĐVHC
+message GetTongSinhTuRequest {
+    string ma_dvhc = 1;
+    int32  nam     = 2;
+}
+
+// ================================================================
+// RESPONSE MESSAGES
+// ================================================================
+
+message GetThongKeTheoThangResponse {
+    civilpro.common.GrpcResponse      meta = 1;
+    repeated ThongKeBienDongThang      data = 2;
+}
+
+message GetBienDongResponse {
+    civilpro.common.GrpcResponse meta = 1;
+    repeated BienDongInfo        data = 2;
+    civilpro.common.PageInfo     page = 3;
+}
+
+message GetTongSinhTuResponse {
+    civilpro.common.GrpcResponse meta      = 1;
+    int64                        tong_sinh = 2;
+    int64                        tong_tu   = 3;
+    int32                        nam        = 4;
+}
+
+// ================================================================
+// SERVICE DEFINITION
+// ================================================================
+
+service BienDongGrpcService {
+
+    // Lấy thống kê biến động từng tháng (Dashboard Line chart T1-T12)
+    rpc GetThongKeTheoThang (GetThongKeTheoThangRequest)
+        returns (GetThongKeTheoThangResponse);
+
+    // Lấy danh sách biến động theo bộ lọc có phân trang
+    rpc GetBienDong (GetBienDongRequest)
+        returns (GetBienDongResponse);
+
+    // Lấy tổng sinh/tử của năm (Báo cáo năm)
+    rpc GetTongSinhTu (GetTongSinhTuRequest)
+        returns (GetTongSinhTuResponse);
+}

@@ -1,0 +1,460 @@
+
+<style>
+* { box-sizing: border-box; }
+body { margin: 0; }
+svg text { font-family: var(--font-sans, sans-serif); }
+.entity rect { fill: #B5D4F4; stroke: #185FA5; stroke-width: 1.5px; }
+.entity text { fill: #042C53; font-size: 12px; font-weight: 500; }
+.relation polygon { fill: #FAC775; stroke: #854F0B; stroke-width: 1.5px; }
+.relation text { fill: #412402; font-size: 11px; font-weight: 500; }
+.attr ellipse { fill: #fff; stroke: #888780; stroke-width: 1px; }
+.attr text { fill: #2C2C2A; font-size: 10px; }
+.attr-pk ellipse { fill: #EAF3DE; stroke: #3B6D11; stroke-width: 1px; }
+.attr-pk text { fill: #173404; font-size: 10px; text-decoration: underline; }
+.attr-fk ellipse { fill: #FAEEDA; stroke: #854F0B; stroke-width: 1px; }
+.attr-fk text { fill: #412402; font-size: 10px; font-style: italic; }
+.edge { stroke: #888780; stroke-width: 1px; fill: none; }
+.card { font-size: 11px; fill: #533AB7; font-weight: 500; }
+@media (prefers-color-scheme: dark) {
+  .entity rect { fill: #0C447C; stroke: #85B7EB; }
+  .entity text { fill: #E6F1FB; }
+  .relation polygon { fill: #633806; stroke: #FAC775; }
+  .relation text { fill: #FAEEDA; }
+  .attr ellipse { fill: #2C2C2A; stroke: #B4B2A9; }
+  .attr text { fill: #D3D1C7; }
+  .attr-pk ellipse { fill: #27500A; stroke: #97C459; }
+  .attr-pk text { fill: #EAF3DE; }
+  .attr-fk ellipse { fill: #633806; stroke: #EF9F27; }
+  .attr-fk text { fill: #FAEEDA; }
+  .card { fill: #AFA9EC; }
+}
+</style>
+<div style="overflow: auto; padding: 1rem 0;">
+<svg width="100%" viewBox="0 0 1400 1700" xmlns="http://www.w3.org/2000/svg">
+
+<!-- ==================== EDGES ==================== -->
+<!-- dbn_roles -> role_permission -->
+<line class="edge" x1="200" y1="120" x2="370" y2="220"/>
+<text class="card" x="270" y="155">1</text>
+<!-- permission -> role_permission -->
+<line class="edge" x1="560" y1="120" x2="430" y2="220"/>
+<text class="card" x="510" y="155">N</text>
+<!-- role_permission -> users -->
+<line class="edge" x1="400" y1="270" x2="400" y2="380"/>
+<text class="card" x="408" y="330">N</text>
+
+<!-- users -> doctor -->
+<line class="edge" x1="340" y1="420" x2="200" y2="540"/>
+<text class="card" x="255" y="465">1</text>
+<!-- users -> employees -->
+<line class="edge" x1="400" y1="430" x2="400" y2="540"/>
+<text class="card" x="408" y="480">1</text>
+<!-- users -> customers -->
+<line class="edge" x1="460" y1="420" x2="620" y2="540"/>
+<text class="card" x="555" y="465">1</text>
+
+<!-- doctor -> appointments (rel) -->
+<line class="edge" x1="200" y1="590" x2="340" y2="720"/>
+<text class="card" x="245" y="645">1</text>
+<!-- customers -> appointments (rel) -->
+<line class="edge" x1="620" y1="590" x2="460" y2="720"/>
+<text class="card" x="555" y="645">1</text>
+<!-- appointments rel -> appointments entity -->
+<line class="edge" x1="400" y1="760" x2="400" y2="860"/>
+<text class="card" x="408" y="810">N</text>
+
+<!-- appointments -> appointment_files -->
+<line class="edge" x1="400" y1="910" x2="220" y2="1020"/>
+<text class="card" x="290" y="950">1</text>
+<!-- appt_files rel -->
+<line class="edge" x1="220" y1="1060" x2="220" y2="1150"/>
+<text class="card" x="228" y="1110">N</text>
+
+<!-- doctor -> doctor_schedules -->
+<line class="edge" x1="150" y1="590" x2="80" y2="720"/>
+<text class="card" x="88" y="645">1</text>
+<line class="edge" x1="80" y1="760" x2="80" y2="860"/>
+<text class="card" x="88" y="810">N</text>
+
+<!-- doctor -> feedback rel -->
+<line class="edge" x1="200" y1="590" x2="700" y2="720"/>
+<text class="card" x="410" y="630">1</text>
+<!-- customers -> feedback rel -->
+<line class="edge" x1="670" y1="590" x2="730" y2="720"/>
+<text class="card" x="715" y="645">1</text>
+<!-- feedback rel -> feedback entity -->
+<line class="edge" x1="720" y1="760" x2="720" y2="860"/>
+<text class="card" x="728" y="810">N</text>
+
+<!-- customers -> orders rel -->
+<line class="edge" x1="660" y1="590" x2="1020" y2="720"/>
+<text class="card" x="860" y="630">1</text>
+<!-- doctor -> orders rel -->
+<line class="edge" x1="240" y1="590" x2="980" y2="720"/>
+<text class="card" x="620" y="640">1</text>
+<!-- orders rel -> orders entity -->
+<line class="edge" x1="1000" y1="760" x2="1000" y2="860"/>
+<text class="card" x="1008" y="810">N</text>
+
+<!-- orders -> order_product -->
+<line class="edge" x1="1000" y1="910" x2="1180" y2="1020"/>
+<text class="card" x="1100" y="950">1</text>
+<line class="edge" x1="1180" y1="1060" x2="1180" y2="1150"/>
+<text class="card" x="1188" y="1110">N</text>
+
+<!-- categories -> posts rel -->
+<line class="edge" x1="1100" y1="120" x2="1020" y2="220"/>
+<text class="card" x="1080" y="155">1</text>
+<line class="edge" x1="980" y1="260" x2="960" y2="380"/>
+<text class="card" x="975" y="320">N</text>
+
+<!-- dbn_roles attrs -->
+<line class="edge" x1="130" y1="100" x2="80" y2="60"/>
+<line class="edge" x1="160" y1="95" x2="140" y2="45"/>
+<line class="edge" x1="190" y1="90" x2="200" y2="45"/>
+
+<!-- permission attrs -->
+<line class="edge" x1="530" y1="100" x2="490" y2="55"/>
+<line class="edge" x1="560" y1="90" x2="560" y2="45"/>
+<line class="edge" x1="590" y1="100" x2="630" y2="55"/>
+
+<!-- users attrs -->
+<line class="edge" x1="360" y1="400" x2="290" y2="360"/>
+<line class="edge" x1="370" y1="390" x2="330" y2="345"/>
+<line class="edge" x1="420" y1="390" x2="470" y2="348"/>
+<line class="edge" x1="440" y1="400" x2="510" y2="365"/>
+
+<!-- doctor attrs -->
+<line class="edge" x1="145" y1="555" x2="85" y2="510"/>
+<line class="edge" x1="155" y1="548" x2="110" y2="498"/>
+<line class="edge" x1="175" y1="543" x2="155" y2="493"/>
+<line class="edge" x1="215" y1="543" x2="235" y2="493"/>
+<line class="edge" x1="230" y1="550" x2="265" y2="505"/>
+
+<!-- customers attrs -->
+<line class="edge" x1="580" y1="555" x2="540" y2="505"/>
+<line class="edge" x1="600" y1="548" x2="575" y2="496"/>
+<line class="edge" x1="625" y1="543" x2="630" y2="492"/>
+<line class="edge" x1="650" y1="548" x2="675" y2="498"/>
+<line class="edge" x1="665" y1="555" x2="705" y2="510"/>
+
+<!-- appointments attrs -->
+<line class="edge" x1="360" y1="878" x2="290" y2="840"/>
+<line class="edge" x1="370" y1="870" x2="320" y2="828"/>
+<line class="edge" x1="430" y1="870" x2="480" y2="828"/>
+<line class="edge" x1="445" y1="878" x2="510" y2="845"/>
+<line class="edge" x1="400" y1="910" x2="400" y2="960"/>
+
+<!-- feedback attrs -->
+<line class="edge" x1="680" y1="878" x2="630" y2="840"/>
+<line class="edge" x1="700" y1="870" x2="670" y2="828"/>
+<line class="edge" x1="740" y1="870" x2="770" y2="828"/>
+<line class="edge" x1="755" y1="878" x2="800" y2="840"/>
+
+<!-- orders attrs -->
+<line class="edge" x1="960" y1="878" x2="910" y2="840"/>
+<line class="edge" x1="980" y1="870" x2="950" y2="828"/>
+<line class="edge" x1="1020" y1="870" x2="1050" y2="828"/>
+<line class="edge" x1="1040" y1="878" x2="1090" y2="845"/>
+<line class="edge" x1="1000" y1="910" x2="1000" y2="960"/>
+
+<!-- posts attrs -->
+<line class="edge" x1="920" y1="398" x2="870" y2="358"/>
+<line class="edge" x1="940" y1="390" x2="910" y2="350"/>
+<line class="edge" x1="975" y1="388" x2="985" y2="348"/>
+<line class="edge" x1="1000" y1="390" x2="1030" y2="352"/>
+
+<!-- categories attrs -->
+<line class="edge" x1="1060" y1="100" x2="1020" y2="58"/>
+<line class="edge" x1="1085" y1="92" x2="1070" y2="50"/>
+<line class="edge" x1="1115" y1="92" x2="1130" y2="50"/>
+
+<!-- doctor_schedules attrs -->
+<line class="edge" x1="55" y1="878" x2="20" y2="840"/>
+<line class="edge" x1="75" y1="870" x2="55" y2="828"/>
+<line class="edge" x1="100" y1="870" x2="115" y2="828"/>
+<line class="edge" x1="115" y1="878" x2="150" y2="840"/>
+
+<!-- appointment_files attrs -->
+<line class="edge" x1="180" y1="1168" x2="140" y2="1210"/>
+<line class="edge" x1="210" y1="1175" x2="195" y2="1218"/>
+<line class="edge" x1="245" y1="1175" x2="255" y2="1218"/>
+
+<!-- order_product attrs -->
+<line class="edge" x1="1145" y1="1168" x2="1110" y2="1210"/>
+<line class="edge" x1="1170" y1="1175" x2="1160" y2="1218"/>
+<line class="edge" x1="1210" y1="1175" x2="1225" y2="1218"/>
+
+<!-- reports standalone -->
+<line class="edge" x1="1280" y1="560" x2="1240" y2="510"/>
+<line class="edge" x1="1300" y1="553" x2="1285" y2="503"/>
+<line class="edge" x1="1325" y1="553" x2="1340" y2="505"/>
+<line class="edge" x1="1345" y1="560" x2="1380" y2="518"/>
+
+<!-- ==================== RELATION DIAMONDS ==================== -->
+<!-- role_permission diamond -->
+<g class="relation">
+  <polygon points="400,220 450,245 400,270 350,245"/>
+  <text x="400" y="249" text-anchor="middle" dominant-baseline="central">Có quyền</text>
+</g>
+
+<!-- appt rel diamond -->
+<g class="relation">
+  <polygon points="400,720 460,745 400,770 340,745"/>
+  <text x="400" y="749" text-anchor="middle" dominant-baseline="central">Đặt lịch</text>
+</g>
+
+<!-- appt_files rel diamond -->
+<g class="relation">
+  <polygon points="220,1020 270,1045 220,1070 170,1045"/>
+  <text x="220" y="1049" text-anchor="middle" dominant-baseline="central">Đính kèm</text>
+</g>
+
+<!-- doctor_schedules rel diamond -->
+<g class="relation">
+  <polygon points="80,720 130,745 80,770 30,745"/>
+  <text x="80" y="749" text-anchor="middle" dominant-baseline="central">Lịch làm</text>
+</g>
+
+<!-- feedback rel diamond -->
+<g class="relation">
+  <polygon points="720,720 780,745 720,770 660,745"/>
+  <text x="720" y="749" text-anchor="middle" dominant-baseline="central">Phản hồi</text>
+</g>
+
+<!-- orders rel diamond -->
+<g class="relation">
+  <polygon points="1000,720 1060,745 1000,770 940,745"/>
+  <text x="1000" y="749" text-anchor="middle" dominant-baseline="central">Đặt hàng</text>
+</g>
+
+<!-- order_product rel diamond -->
+<g class="relation">
+  <polygon points="1180,1020 1230,1045 1180,1070 1130,1045"/>
+  <text x="1180" y="1049" text-anchor="middle" dominant-baseline="central">Gồm</text>
+</g>
+
+<!-- categories->posts rel diamond -->
+<g class="relation">
+  <polygon points="990,220 1040,245 990,270 940,245"/>
+  <text x="990" y="249" text-anchor="middle" dominant-baseline="central">Chứa</text>
+</g>
+
+<!-- ==================== ENTITIES ==================== -->
+<!-- dbn_roles -->
+<g class="entity">
+  <rect x="120" y="95" width="110" height="34" rx="4"/>
+  <text x="175" y="116" text-anchor="middle" dominant-baseline="central">dbn_roles</text>
+</g>
+<!-- permission -->
+<g class="entity">
+  <rect x="500" y="95" width="110" height="34" rx="4"/>
+  <text x="555" y="116" text-anchor="middle" dominant-baseline="central">permission</text>
+</g>
+<!-- users -->
+<g class="entity">
+  <rect x="345" y="390" width="110" height="34" rx="4"/>
+  <text x="400" y="411" text-anchor="middle" dominant-baseline="central">users</text>
+</g>
+<!-- doctor -->
+<g class="entity">
+  <rect x="130" y="548" width="110" height="34" rx="4"/>
+  <text x="185" y="569" text-anchor="middle" dominant-baseline="central">doctor</text>
+</g>
+<!-- employees -->
+<g class="entity">
+  <rect x="345" y="548" width="110" height="34" rx="4"/>
+  <text x="400" y="569" text-anchor="middle" dominant-baseline="central">employees</text>
+</g>
+<!-- customers -->
+<g class="entity">
+  <rect x="565" y="548" width="110" height="34" rx="4"/>
+  <text x="620" y="569" text-anchor="middle" dominant-baseline="central">customers</text>
+</g>
+<!-- appointments -->
+<g class="entity">
+  <rect x="345" y="860" width="110" height="34" rx="4"/>
+  <text x="400" y="881" text-anchor="middle" dominant-baseline="central">appointments</text>
+</g>
+<!-- appointment_files -->
+<g class="entity">
+  <rect x="155" y="1150" width="130" height="34" rx="4"/>
+  <text x="220" y="1171" text-anchor="middle" dominant-baseline="central">appointment_files</text>
+</g>
+<!-- doctor_schedules -->
+<g class="entity">
+  <rect x="20" y="860" width="130" height="34" rx="4"/>
+  <text x="85" y="881" text-anchor="middle" dominant-baseline="central">doctor_schedules</text>
+</g>
+<!-- feedback -->
+<g class="entity">
+  <rect x="665" y="860" width="110" height="34" rx="4"/>
+  <text x="720" y="881" text-anchor="middle" dominant-baseline="central">feedback</text>
+</g>
+<!-- orders -->
+<g class="entity">
+  <rect x="945" y="860" width="110" height="34" rx="4"/>
+  <text x="1000" y="881" text-anchor="middle" dominant-baseline="central">orders</text>
+</g>
+<!-- order_product -->
+<g class="entity">
+  <rect x="1120" y="1150" width="120" height="34" rx="4"/>
+  <text x="1180" y="1171" text-anchor="middle" dominant-baseline="central">order_product</text>
+</g>
+<!-- categories -->
+<g class="entity">
+  <rect x="1040" y="95" width="110" height="34" rx="4"/>
+  <text x="1095" y="116" text-anchor="middle" dominant-baseline="central">categories</text>
+</g>
+<!-- posts -->
+<g class="entity">
+  <rect x="910" y="388" width="110" height="34" rx="4"/>
+  <text x="965" y="409" text-anchor="middle" dominant-baseline="central">posts</text>
+</g>
+<!-- reports -->
+<g class="entity">
+  <rect x="1245" y="548" width="110" height="34" rx="4"/>
+  <text x="1300" y="569" text-anchor="middle" dominant-baseline="central">reports</text>
+</g>
+<!-- contact -->
+<g class="entity">
+  <rect x="1245" y="700" width="110" height="34" rx="4"/>
+  <text x="1300" y="721" text-anchor="middle" dominant-baseline="central">contact</text>
+</g>
+<!-- data_images -->
+<g class="entity">
+  <rect x="1245" y="860" width="120" height="34" rx="4"/>
+  <text x="1305" y="881" text-anchor="middle" dominant-baseline="central">data_images</text>
+</g>
+
+<!-- ==================== ATTRIBUTES ==================== -->
+<!-- dbn_roles attrs -->
+<g class="attr-pk"><ellipse cx="75" cy="45" rx="32" ry="14"/><text x="75" y="45" text-anchor="middle" dominant-baseline="central">id PK</text></g>
+<g class="attr"><ellipse cx="140" cy="38" rx="40" ry="14"/><text x="140" y="38" text-anchor="middle" dominant-baseline="central">ROLE_CODE</text></g>
+<g class="attr"><ellipse cx="210" cy="38" rx="40" ry="14"/><text x="210" y="38" text-anchor="middle" dominant-baseline="central">ROLE_NAME</text></g>
+
+<!-- permission attrs -->
+<g class="attr-pk"><ellipse cx="470" cy="42" rx="32" ry="14"/><text x="470" y="42" text-anchor="middle" dominant-baseline="central">id PK</text></g>
+<g class="attr"><ellipse cx="555" cy="28" rx="48" ry="14"/><text x="555" y="28" text-anchor="middle" dominant-baseline="central">PERM_CODE</text></g>
+<g class="attr"><ellipse cx="645" cy="42" rx="45" ry="14"/><text x="645" y="42" text-anchor="middle" dominant-baseline="central">API_SOURCE</text></g>
+
+<!-- users attrs -->
+<g class="attr-pk"><ellipse cx="280" cy="348" rx="32" ry="14"/><text x="280" y="348" text-anchor="middle" dominant-baseline="central">id PK</text></g>
+<g class="attr"><ellipse cx="330" cy="330" rx="35" ry="13"/><text x="330" y="330" text-anchor="middle" dominant-baseline="central">EMAIL</text></g>
+<g class="attr"><ellipse cx="470" cy="330" rx="35" ry="13"/><text x="470" y="330" text-anchor="middle" dominant-baseline="central">STATUS</text></g>
+<g class="attr-fk"><ellipse cx="525" cy="348" rx="40" ry="13"/><text x="525" y="348" text-anchor="middle" dominant-baseline="central">ROLE_ID FK</text></g>
+
+<!-- doctor attrs -->
+<g class="attr-pk"><ellipse cx="78" cy="497" rx="32" ry="13"/><text x="78" y="497" text-anchor="middle" dominant-baseline="central">id PK</text></g>
+<g class="attr"><ellipse cx="108" cy="480" rx="28" ry="13"/><text x="108" y="480" text-anchor="middle" dominant-baseline="central">NAME</text></g>
+<g class="attr"><ellipse cx="152" cy="475" rx="32" ry="13"/><text x="152" y="475" text-anchor="middle" dominant-baseline="central">PHONE</text></g>
+<g class="attr"><ellipse cx="240" cy="475" rx="42" ry="13"/><text x="240" y="475" text-anchor="middle" dominant-baseline="central">SPECIALIZE</text></g>
+<g class="attr-fk"><ellipse cx="275" cy="495" rx="40" ry="13"/><text x="275" y="495" text-anchor="middle" dominant-baseline="central">USER_ID FK</text></g>
+
+<!-- employees attrs -->
+<g class="attr-pk"><ellipse cx="345" cy="510" rx="32" ry="13"/><text x="345" y="510" text-anchor="middle" dominant-baseline="central">id PK</text></g>
+<g class="attr"><ellipse cx="400" cy="497" rx="40" ry="13"/><text x="400" y="497" text-anchor="middle" dominant-baseline="central">FULL_NAME</text></g>
+<g class="attr-fk"><ellipse cx="455" cy="510" rx="40" ry="13"/><text x="455" y="510" text-anchor="middle" dominant-baseline="central">USER_ID FK</text></g>
+
+<!-- customers attrs -->
+<g class="attr-pk"><ellipse cx="532" cy="495" rx="32" ry="13"/><text x="532" y="495" text-anchor="middle" dominant-baseline="central">id PK</text></g>
+<g class="attr"><ellipse cx="572" cy="478" rx="28" ry="13"/><text x="572" y="478" text-anchor="middle" dominant-baseline="central">NAME</text></g>
+<g class="attr"><ellipse cx="622" cy="470" rx="32" ry="13"/><text x="622" y="470" text-anchor="middle" dominant-baseline="central">PHONE</text></g>
+<g class="attr"><ellipse cx="675" cy="475" rx="28" ry="13"/><text x="675" y="475" text-anchor="middle" dominant-baseline="central">EMAIL</text></g>
+<g class="attr-fk"><ellipse cx="715" cy="492" rx="40" ry="13"/><text x="715" y="492" text-anchor="middle" dominant-baseline="central">USER_ID FK</text></g>
+
+<!-- appointments attrs -->
+<g class="attr-pk"><ellipse cx="278" cy="830" rx="32" ry="13"/><text x="278" y="830" text-anchor="middle" dominant-baseline="central">id PK</text></g>
+<g class="attr"><ellipse cx="318" cy="815" rx="28" ry="13"/><text x="318" y="815" text-anchor="middle" dominant-baseline="central">DATE</text></g>
+<g class="attr"><ellipse cx="485" cy="815" rx="28" ry="13"/><text x="485" y="815" text-anchor="middle" dominant-baseline="central">TIME</text></g>
+<g class="attr"><ellipse cx="528" cy="830" rx="35" ry="13"/><text x="528" y="830" text-anchor="middle" dominant-baseline="central">STATUS</text></g>
+<g class="attr"><ellipse cx="400" cy="960" rx="28" ry="13"/><text x="400" y="960" text-anchor="middle" dominant-baseline="central">NOTE</text></g>
+
+<!-- feedback attrs -->
+<g class="attr-pk"><ellipse cx="625" cy="830" rx="32" ry="13"/><text x="625" y="830" text-anchor="middle" dominant-baseline="central">id PK</text></g>
+<g class="attr"><ellipse cx="665" cy="815" rx="28" ry="13"/><text x="665" y="815" text-anchor="middle" dominant-baseline="central">TEXT</text></g>
+<g class="attr"><ellipse cx="778" cy="815" rx="38" ry="13"/><text x="778" y="815" text-anchor="middle" dominant-baseline="central">EVALUATE</text></g>
+<g class="attr"><ellipse cx="815" cy="830" rx="28" ry="13"/><text x="815" y="830" text-anchor="middle" dominant-baseline="central">SDT</text></g>
+
+<!-- orders attrs -->
+<g class="attr-pk"><ellipse cx="900" cy="830" rx="32" ry="13"/><text x="900" y="830" text-anchor="middle" dominant-baseline="central">id PK</text></g>
+<g class="attr"><ellipse cx="940" cy="815" rx="38" ry="13"/><text x="940" y="815" text-anchor="middle" dominant-baseline="central">SERVICE</text></g>
+<g class="attr"><ellipse cx="1062" cy="815" rx="38" ry="13"/><text x="1062" y="815" text-anchor="middle" dominant-baseline="central">TOT_PRICE</text></g>
+<g class="attr"><ellipse cx="1105" cy="830" rx="35" ry="13"/><text x="1105" y="830" text-anchor="middle" dominant-baseline="central">STATUS</text></g>
+<g class="attr"><ellipse cx="1000" cy="960" rx="28" ry="13"/><text x="1000" y="960" text-anchor="middle" dominant-baseline="central">NOTE</text></g>
+
+<!-- posts attrs -->
+<g class="attr-pk"><ellipse cx="862" cy="350" rx="32" ry="13"/><text x="862" y="350" text-anchor="middle" dominant-baseline="central">id PK</text></g>
+<g class="attr"><ellipse cx="902" cy="335" rx="28" ry="13"/><text x="902" y="335" text-anchor="middle" dominant-baseline="central">TITLE</text></g>
+<g class="attr"><ellipse cx="988" cy="333" rx="35" ry="13"/><text x="988" y="333" text-anchor="middle" dominant-baseline="central">STATUS</text></g>
+<g class="attr-fk"><ellipse cx="1040" cy="337" rx="44" ry="13"/><text x="1040" y="337" text-anchor="middle" dominant-baseline="central">CATEG_ID FK</text></g>
+
+<!-- categories attrs -->
+<g class="attr-pk"><ellipse cx="1012" cy="45" rx="32" ry="13"/><text x="1012" y="45" text-anchor="middle" dominant-baseline="central">id PK</text></g>
+<g class="attr"><ellipse cx="1068" cy="35" rx="28" ry="13"/><text x="1068" y="35" text-anchor="middle" dominant-baseline="central">NAME</text></g>
+<g class="attr"><ellipse cx="1140" cy="38" rx="38" ry="13"/><text x="1140" y="38" text-anchor="middle" dominant-baseline="central">DESCRIP.</text></g>
+
+<!-- doctor_schedules attrs -->
+<g class="attr-pk"><ellipse cx="15" cy="830" rx="32" ry="13"/><text x="15" y="830" text-anchor="middle" dominant-baseline="central">id PK</text></g>
+<g class="attr"><ellipse cx="52" cy="815" rx="38" ry="13"/><text x="52" y="815" text-anchor="middle" dominant-baseline="central">WORK_DATE</text></g>
+<g class="attr"><ellipse cx="118" cy="815" rx="38" ry="13"/><text x="118" y="815" text-anchor="middle" dominant-baseline="central">START_TIME</text></g>
+<g class="attr"><ellipse cx="158" cy="830" rx="38" ry="13"/><text x="158" y="830" text-anchor="middle" dominant-baseline="central">END_TIME</text></g>
+
+<!-- appointment_files attrs -->
+<g class="attr-pk"><ellipse cx="135" cy="1215" rx="32" ry="13"/><text x="135" y="1215" text-anchor="middle" dominant-baseline="central">id PK</text></g>
+<g class="attr"><ellipse cx="192" cy="1222" rx="40" ry="13"/><text x="192" y="1222" text-anchor="middle" dominant-baseline="central">FILE_URL</text></g>
+<g class="attr"><ellipse cx="258" cy="1222" rx="42" ry="13"/><text x="258" y="1222" text-anchor="middle" dominant-baseline="central">FILE_NAME</text></g>
+
+<!-- order_product attrs -->
+<g class="attr-pk"><ellipse cx="1102" cy="1215" rx="32" ry="13"/><text x="1102" y="1215" text-anchor="middle" dominant-baseline="central">id PK</text></g>
+<g class="attr"><ellipse cx="1158" cy="1222" rx="28" ry="13"/><text x="1158" y="1222" text-anchor="middle" dominant-baseline="central">QTY</text></g>
+<g class="attr"><ellipse cx="1232" cy="1222" rx="28" ry="13"/><text x="1232" y="1222" text-anchor="middle" dominant-baseline="central">PRICE</text></g>
+
+<!-- reports standalone attrs -->
+<line class="edge" x1="1270" y1="555" x2="1225" y2="505"/>
+<line class="edge" x1="1290" y1="548" x2="1272" y2="500"/>
+<line class="edge" x1="1315" y1="548" x2="1325" y2="500"/>
+<line class="edge" x1="1340" y1="555" x2="1368" y2="512"/>
+<g class="attr-pk"><ellipse cx="1218" cy="497" rx="32" ry="13"/><text x="1218" y="497" text-anchor="middle" dominant-baseline="central">id PK</text></g>
+<g class="attr"><ellipse cx="1268" cy="487" rx="28" ry="13"/><text x="1268" y="487" text-anchor="middle" dominant-baseline="central">TITLE</text></g>
+<g class="attr"><ellipse cx="1328" cy="487" rx="28" ry="13"/><text x="1328" y="487" text-anchor="middle" dominant-baseline="central">TYPE</text></g>
+<g class="attr"><ellipse cx="1378" cy="500" rx="38" ry="13"/><text x="1378" y="500" text-anchor="middle" dominant-baseline="central">CONTENT</text></g>
+
+<!-- contact standalone attrs -->
+<line class="edge" x1="1270" y1="707" x2="1225" y2="665"/>
+<line class="edge" x1="1290" y1="700" x2="1272" y2="658"/>
+<line class="edge" x1="1315" y1="700" x2="1325" y2="658"/>
+<line class="edge" x1="1340" y1="707" x2="1368" y2="665"/>
+<g class="attr-pk"><ellipse cx="1218" cy="655" rx="32" ry="13"/><text x="1218" y="655" text-anchor="middle" dominant-baseline="central">id PK</text></g>
+<g class="attr"><ellipse cx="1268" cy="645" rx="28" ry="13"/><text x="1268" y="645" text-anchor="middle" dominant-baseline="central">NAME</text></g>
+<g class="attr"><ellipse cx="1328" cy="645" rx="28" ry="13"/><text x="1328" y="645" text-anchor="middle" dominant-baseline="central">EMAIL</text></g>
+<g class="attr"><ellipse cx="1378" cy="655" rx="28" ry="13"/><text x="1378" y="655" text-anchor="middle" dominant-baseline="central">TEXT</text></g>
+
+<!-- data_images standalone attrs -->
+<line class="edge" x1="1280" y1="867" x2="1238" y2="830"/>
+<line class="edge" x1="1305" y1="860" x2="1300" y2="820"/>
+<line class="edge" x1="1330" y1="867" x2="1358" y2="830"/>
+<g class="attr-pk"><ellipse cx="1232" cy="820" rx="32" ry="13"/><text x="1232" y="820" text-anchor="middle" dominant-baseline="central">id PK</text></g>
+<g class="attr"><ellipse cx="1300" cy="808" rx="42" ry="13"/><text x="1300" y="808" text-anchor="middle" dominant-baseline="central">MEDIA_URL</text></g>
+<g class="attr"><ellipse cx="1368" cy="820" rx="28" ry="13"/><text x="1368" y="820" text-anchor="middle" dominant-baseline="central">DATA</text></g>
+
+<!-- ==================== LEGEND ==================== -->
+<g transform="translate(1050, 1050)">
+  <rect x="0" y="0" width="300" height="150" rx="8" fill="none" stroke="#B4B2A9" stroke-width="0.5" stroke-dasharray="4 3"/>
+  <text x="150" y="22" text-anchor="middle" style="font-size:12px;font-weight:500;fill:var(--color-text-secondary)">Chú thích</text>
+  <rect x="16" y="36" width="60" height="22" rx="3" fill="#B5D4F4" stroke="#185FA5" stroke-width="1.5"/>
+  <text x="46" y="51" text-anchor="middle" style="font-size:10px;fill:#042C53">Thực thể</text>
+  <polygon points="130,36 160,51 130,66 100,51" fill="#FAC775" stroke="#854F0B" stroke-width="1.5"/>
+  <text x="130" y="55" text-anchor="middle" style="font-size:10px;fill:#412402">Quan hệ</text>
+  <ellipse cx="230" cy="51" rx="45" ry="14" fill="#fff" stroke="#888780" stroke-width="1"/>
+  <text x="230" y="55" text-anchor="middle" style="font-size:10px;fill:#2C2C2A">Thuộc tính</text>
+  <ellipse cx="60" cy="100" rx="45" ry="14" fill="#EAF3DE" stroke="#3B6D11" stroke-width="1"/>
+  <text x="60" y="104" text-anchor="middle" style="font-size:10px;fill:#173404;text-decoration:underline">Khóa chính PK</text>
+  <ellipse cx="200" cy="100" rx="45" ry="14" fill="#FAEEDA" stroke="#854F0B" stroke-width="1"/>
+  <text x="200" y="104" text-anchor="middle" style="font-size:10px;fill:#412402;font-style:italic">Khóa ngoại FK</text>
+  <text x="16" y="135" style="font-size:10px;fill:#533AB7;font-weight:500">1 / N</text>
+  <text x="40" y="135" style="font-size:10px;fill:var(--color-text-secondary)">= Bản số quan hệ</text>
+</g>
+
+</svg>
+</div>

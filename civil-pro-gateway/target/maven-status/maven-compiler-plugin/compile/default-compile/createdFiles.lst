@@ -1,0 +1,6 @@
+vn\civilpro\gateway\config\KeyResolverConfig.class
+vn\civilpro\gateway\config\SecurityPathRewriteFilter.class
+vn\civilpro\gateway\filter\JwtAuthenticationFilter$Config.class
+vn\civilpro\gateway\filter\JwtAuthenticationFilter.class
+vn\civilpro\gateway\GatewayApplication.class
+vn\civilpro\gateway\config\GatewaySecurityConfig.class

@@ -1,0 +1,165 @@
+syntax = "proto3";
+
+// ================================================================
+// CIVIL-PRO — THỐNG KÊ & BÁO CÁO SERVICE PROTO
+//
+// Caller  : Gateway (Dashboard API aggregate)
+// Provider: civil-pro-thong-ke  (gRPC port 9087)
+//
+// Package java : vn.civilpro.grpc.thongke
+// ================================================================
+
+package civilpro.thongke;
+
+option java_multiple_files  = true;
+option java_package         = "vn.civil.grpc.thongke";
+option java_outer_classname = "ThongKeProto";
+
+import "common.proto";
+
+// ================================================================
+// DATA MESSAGES
+// ================================================================
+
+// Dữ liệu tổng quan Dashboard (4 card đầu trang)
+message DashboardSummary {
+    int64  tong_dan_so          = 1;   // 1,854,230
+    int64  so_ho_gia_dinh       = 2;   // 450,112
+    int64  tam_tru_tam_vang     = 3;   // 12,450
+    int64  cccd_sap_het_han     = 4;   // 2,841
+    double tang_truong_pct      = 5;   // +1.2%
+    string cap_nhat_luc         = 6;   // ISO datetime
+}
+
+// Thống kê dân số một ĐVHC (bảng cuối Dashboard)
+message ThongKeDvhcRow {
+    string ma_dvhc      = 1;
+    string ten_dvhc     = 2;
+    int64  dan_so       = 3;
+    int32  so_ho        = 4;
+    double mat_do       = 5;   // người/km²
+    int32  trang_thai   = 6;   // 1=Ổn định, 2=Tăng nhanh, 3=Biến động
+    string trang_thai_label = 7;
+}
+
+// Dữ liệu một điểm trên Line chart (T1-T12)
+message DataPoint {
+    string label = 1;   // "T1", "T2", ... "T12"
+    int64  value = 2;
+}
+
+// Series cho line chart biến động
+message BienDongSeries {
+    repeated DataPoint so_sinh = 1;
+    repeated DataPoint so_tu   = 2;
+}
+
+// Cơ cấu độ tuổi cho Pie chart
+message CoCauDoTuoiChart {
+    double pct_0_14  = 1;   // % 0-14 tuổi
+    double pct_15_64 = 2;   // % 15-64 tuổi
+    double pct_tren_65 = 3; // % trên 65 tuổi
+    int64  so_0_14   = 4;
+    int64  so_15_64  = 5;
+    int64  so_tren_65 = 6;
+}
+
+// Lịch sử một báo cáo đã xuất
+message LichSuBaoCao {
+    int64  id              = 1;
+    string ma_bao_cao      = 2;
+    string loai_bao_cao    = 3;
+    string dinh_dang       = 4;   // PDF/EXCEL
+    string trang_thai      = 5;   // DANG_XU_LY/HOAN_THANH/LOI
+    string nguoi_yeu_cau   = 6;
+    string ngay_yeu_cau    = 7;   // ISO datetime
+    string ngay_hoan_thanh = 8;
+    string duong_dan_file  = 9;   // URL download (MinIO pre-signed URL)
+}
+
+// ================================================================
+// REQUEST MESSAGES
+// ================================================================
+
+// Lấy dữ liệu Dashboard tổng quan
+message GetDashboardRequest {
+    string ma_dvhc = 1;   // Rỗng = toàn tỉnh
+}
+
+// Lấy line chart biến động theo năm
+message GetBienDongChartRequest {
+    string ma_dvhc = 1;
+    int32  nam     = 2;
+}
+
+// Lấy bảng dân số theo huyện/xã
+message GetBangDanSoRequest {
+    string ma_dvhc_cha = 1;   // Lấy cấp con của ĐVHC này
+    int32  cap_dvhc    = 2;   // 2=Huyện, 3=Xã
+    civilpro.common.PageRequest page = 3;
+}
+
+// Yêu cầu xuất báo cáo
+message YeuCauXuatBaoCaoRequest {
+    string loai_bao_cao  = 1;   // THONG_KE_DAN_SO/BIEN_DONG/CCCD_HET_HAN/...
+    string dinh_dang     = 2;   // PDF / EXCEL
+    string ma_dvhc       = 3;
+    civilpro.common.DateRange date_range = 4;
+    string nguoi_yeu_cau = 5;
+}
+
+// Lấy kết quả xuất báo cáo
+message GetKetQuaBaoCaoRequest {
+    string ma_bao_cao = 1;
+}
+
+// ================================================================
+// RESPONSE MESSAGES
+// ================================================================
+
+message GetDashboardResponse {
+    civilpro.common.GrpcResponse meta    = 1;
+    DashboardSummary             summary = 2;
+    BienDongSeries               bien_dong_chart = 3;
+    CoCauDoTuoiChart             co_cau_do_tuoi  = 4;
+}
+
+message GetBangDanSoResponse {
+    civilpro.common.GrpcResponse meta = 1;
+    repeated ThongKeDvhcRow      data = 2;
+    civilpro.common.PageInfo     page = 3;
+}
+
+message YeuCauXuatBaoCaoResponse {
+    civilpro.common.GrpcResponse meta      = 1;
+    string                       ma_bao_cao = 2;   // Tracking ID
+    string                       trang_thai = 3;   // DANG_XU_LY
+}
+
+message GetKetQuaBaoCaoResponse {
+    civilpro.common.GrpcResponse meta     = 1;
+    LichSuBaoCao                 bao_cao  = 2;
+}
+
+// ================================================================
+// SERVICE DEFINITION
+// ================================================================
+
+service ThongKeGrpcService {
+
+    // Lấy toàn bộ dữ liệu Dashboard (1 call thay vì 5 call riêng)
+    rpc GetDashboard (GetDashboardRequest)
+        returns (GetDashboardResponse);
+
+    // Lấy dữ liệu bảng dân số theo ĐVHC có phân trang
+    rpc GetBangDanSo (GetBangDanSoRequest)
+        returns (GetBangDanSoResponse);
+
+    // Yêu cầu xuất báo cáo async (trả về mã tracking)
+    rpc YeuCauXuatBaoCao (YeuCauXuatBaoCaoRequest)
+        returns (YeuCauXuatBaoCaoResponse);
+
+    // Kiểm tra kết quả xuất báo cáo + lấy URL download
+    rpc GetKetQuaBaoCao (GetKetQuaBaoCaoRequest)
+        returns (GetKetQuaBaoCaoResponse);
+}

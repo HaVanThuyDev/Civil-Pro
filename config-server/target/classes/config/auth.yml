@@ -1,0 +1,74 @@
+server:
+  port: 8081
+
+spring:
+  application:
+    name: civil-pro-auth
+
+  datasource:
+    url: jdbc:mysql://localhost:3306/DB_AUTH?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Ho_Chi_Minh
+    username: root
+    password: 11032003
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    hikari:
+      pool-name: Auth-HikariPool
+      maximum-pool-size: 10
+      minimum-idle: 3
+
+  jpa:
+    hibernate:
+      ddl-auto: none
+    show-sql: false
+    open-in-view: false
+
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+    baseline-on-migrate: true
+
+  data:
+    redis:
+      host: redis-13181.c9.us-east-1-2.ec2.cloud.redislabs.com
+      port: 13181
+      username: default
+      password: nB7VJSAt4wPLZAhgi2aZEPsMHXiPh4cA
+      ssl:
+        enabled: true
+      database: 0
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka
+  instance:
+    prefer-ip-address: true
+
+civil-pro:
+  jwt:
+    secret: my-secret-key-123456789012345678901234
+    access-token-expiration: 86400000
+    refresh-token-expiration: 604800000
+
+  security:
+    max-login-attempts: 5
+    lockout-duration-minutes: 30
+
+grpc:
+  server:
+    port: 9091
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus
+
+cloudinary:
+  cloud-name: dr8e25tyb
+  api-key: 651826164564212
+  api-secret: KkFFMqSpGBQw2ZPzYfldhmX3HCg
+
+logging:
+  level:
+    vn.civilpro: DEBUG
+    org.springframework.security: WARN

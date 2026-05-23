@@ -1,0 +1,139 @@
+syntax = "proto3";
+
+package civilpro.congdan;
+
+option java_multiple_files  = true;
+option java_package         = "vn.civil.grpc.congdan";
+option java_outer_classname = "CongDanProto";
+
+import "common.proto";
+
+message CongDanInfo {
+    int64  id                   = 1;
+    string citizen_code         = 2;
+    string full_name            = 3;
+    int32  gender               = 4;
+    string date_of_birth        = 5;
+    string national_id          = 6;
+    string national_id_expiry   = 7;
+    string permanent_address_code = 8;
+    string permanent_address    = 9;
+    string occupation           = 10;
+    string citizen_type         = 11;
+    string status               = 12;
+    bool   is_household_head    = 13;
+    int64  household_id         = 14;
+    int32  age                  = 15;
+}
+
+message CongDanSummary {
+    int64  id           = 1;
+    string citizen_code = 2;
+    string full_name    = 3;
+    int32  gender       = 4;
+    string date_of_birth = 5;
+    string national_id  = 6;
+    string status       = 7;
+    string address_code = 8;
+}
+
+message AgeStructure {
+    string address_code  = 1;
+    int64  population_0_14  = 2;
+    int64  population_15_64 = 3;
+    int64  population_65_plus = 4;
+    int64  total         = 5;
+}
+
+message GetCongDanByIdRequest {
+    int64 id = 1;
+}
+
+message GetCongDanByCccdRequest {
+    string national_id = 1;
+}
+
+message GetCongDanListByIdsRequest {
+    repeated int64 ids = 1;
+}
+
+message CheckCccdExistRequest {
+    string national_id  = 1;
+    int64  exclude_id   = 2;
+}
+
+message GetExpiringNationalIdRequest {
+    int32  days_threshold   = 1;
+    string address_code     = 2;
+}
+
+message CountPopulationByAddressRequest {
+    string address_code = 1;
+}
+
+message GetAgeStructureRequest {
+    string address_code_prefix = 1;
+}
+
+message UpdateHouseholdRequest {
+    repeated int64 citizen_ids  = 1;
+    int64          household_id = 2;
+}
+
+message GetCongDanResponse {
+    civilpro.common.GrpcResponse meta = 1;
+    CongDanInfo                  data = 2;
+}
+
+message GetCongDanListResponse {
+    civilpro.common.GrpcResponse meta  = 1;
+    repeated CongDanSummary      data  = 2;
+    int32                        total = 3;
+}
+
+message CheckExistResponse {
+    civilpro.common.GrpcResponse meta   = 1;
+    bool                         exists = 2;
+}
+
+message CountResponse {
+    civilpro.common.GrpcResponse meta  = 1;
+    int64                        count = 2;
+}
+
+message GetAgeStructureResponse {
+    civilpro.common.GrpcResponse meta = 1;
+    AgeStructure                 data = 2;
+}
+
+message UpdateHouseholdResponse {
+    civilpro.common.GrpcResponse meta          = 1;
+    int32                        updated_count = 2;
+}
+
+service CongDanGrpcService {
+
+    rpc GetById (GetCongDanByIdRequest)
+        returns (GetCongDanResponse);
+
+    rpc GetByNationalId (GetCongDanByCccdRequest)
+        returns (GetCongDanResponse);
+
+    rpc GetListByIds (GetCongDanListByIdsRequest)
+        returns (GetCongDanListResponse);
+
+    rpc CheckNationalIdExist (CheckCccdExistRequest)
+        returns (CheckExistResponse);
+
+    rpc GetExpiringNationalIds (GetExpiringNationalIdRequest)
+        returns (GetCongDanListResponse);
+
+    rpc CountPopulationByAddress (CountPopulationByAddressRequest)
+        returns (CountResponse);
+
+    rpc GetAgeStructure (GetAgeStructureRequest)
+        returns (GetAgeStructureResponse);
+
+    rpc UpdateHouseholdForCitizens (UpdateHouseholdRequest)
+        returns (UpdateHouseholdResponse);
+}

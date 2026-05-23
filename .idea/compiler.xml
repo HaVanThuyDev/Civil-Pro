@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <annotationProcessing>
+      <profile name="Maven default annotation processors profile" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <module name="civil-pro-gateway" />
+        <module name="registry" />
+      </profile>
+      <profile name="Annotation profile for civil-pro" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="false">
+          <entry name="$MAVEN_REPOSITORY$/org/projectlombok/lombok/1.18.32/lombok-1.18.32.jar" />
+          <entry name="$MAVEN_REPOSITORY$/org/mapstruct/mapstruct-processor/1.5.5.Final/mapstruct-processor-1.5.5.Final.jar" />
+          <entry name="$MAVEN_REPOSITORY$/org/projectlombok/lombok-mapstruct-binding/0.2.0/lombok-mapstruct-binding-0.2.0.jar" />
+        </processorPath>
+        <module name="config-server" />
+        <module name="civil-pro-auth" />
+        <module name="civil-pro-citizen" />
+        <module name="civil-pro-fluctuations" />
+        <module name="civil-pro-statistical" />
+        <module name="civil-pro-synchronized" />
+        <module name="civil-pro-household" />
+      </profile>
+    </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="civil-pro-proto" target="21" />
+      <module name="civil_pro-auth1" target="21" />
+      <module name="demo" target="21" />
+    </bytecodeTargetLevel>
+  </component>
+  <component name="JavacSettings">
+    <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="civil-pro" options="" />
+      <module name="civil-pro-auth" options="-parameters" />
+      <module name="civil-pro-citizen" options="-parameters" />
+      <module name="civil-pro-fluctuations" options="-parameters" />
+      <module name="civil-pro-gateway" options="-parameters" />
+      <module name="civil-pro-household" options="-parameters" />
+      <module name="civil-pro-proto" options="-parameters" />
+      <module name="civil-pro-statistical" options="-parameters" />
+      <module name="civil-pro-synchronized" options="-parameters" />
+      <module name="config-server" options="-parameters" />
+      <module name="demo" options="-parameters" />
+      <module name="registry" options="-parameters" />
+    </option>
+  </component>
+</project>

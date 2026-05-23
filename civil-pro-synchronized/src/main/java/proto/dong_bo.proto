@@ -1,0 +1,152 @@
+syntax = "proto3";
+
+// ================================================================
+// CIVIL-PRO — ĐỒNG BỘ CSDL QUỐC GIA SERVICE PROTO
+//
+// Caller  : Gateway (Admin panel), ThongKeService
+// Provider: civil-pro-dong-bo  (gRPC port 9088)
+//
+// Package java : vn.civilpro.grpc.dongbo
+// ================================================================
+
+package civilpro.dongbo;
+
+option java_multiple_files  = true;
+option java_package         = "vn.civil.grpc.dongbo";
+option java_outer_classname = "DongBoProto";
+
+import "common.proto";
+
+// ================================================================
+// DATA MESSAGES
+// ================================================================
+
+// Thông tin một phiên đồng bộ
+message PhienDongBoInfo {
+    int64  id                    = 1;
+    string ma_phien              = 2;   // VD: SYNC-A1B2C3D4
+    string loai_dong_bo          = 3;   // TOAN_BO/TANG_TIEN/KHOI_PHUC
+    string thoi_gian_bat_dau     = 4;   // ISO datetime
+    string thoi_gian_ket_thuc    = 5;   // ISO datetime (rỗng nếu đang chạy)
+    string trang_thai            = 6;   // DANG_CHAY/HOAN_THANH/THAT_BAI/RETRY
+    int32  tong_ban_ghi          = 7;
+    int32  da_xu_ly              = 8;
+    int32  thanh_cong            = 9;
+    int32  that_bai              = 10;
+    double phan_tram_hoan_thanh  = 11;  // 0.0 - 100.0 (Dashboard hiển thị "80%")
+    string ma_loi                = 12;  // VD: SYS-ERR-09
+    string mo_ta_loi             = 13;
+    int32  lan_thu               = 14;  // Retry count
+}
+
+// Bản ghi lỗi trong phiên đồng bộ
+message BanGhiLoiInfo {
+    int64  id          = 1;
+    int64  id_phien    = 2;
+    string so_cccd     = 3;
+    string ly_do_loi   = 4;
+    string ma_loi      = 5;
+    bool   da_xu_ly    = 6;
+    string ngay_tao    = 7;
+}
+
+// ================================================================
+// REQUEST MESSAGES
+// ================================================================
+
+// Kích hoạt đồng bộ thủ công (Admin trigger)
+message TriggerDongBoRequest {
+    string loai_dong_bo = 1;   // TOAN_BO / TANG_TIEN
+    string nguoi_kich_hoat = 2;
+}
+
+// Lấy trạng thái phiên đồng bộ mới nhất (Dashboard widget "80% Hoàn thành")
+message GetPhienMoiNhatRequest {
+    civilpro.common.EmptyRequest empty = 1;
+}
+
+// Lấy chi tiết một phiên
+message GetPhienByMaRequest {
+    string ma_phien = 1;
+}
+
+// Lấy lịch sử các phiên đồng bộ
+message GetLichSuPhienRequest {
+    civilpro.common.PageRequest page = 1;
+}
+
+// Lấy danh sách bản ghi lỗi của một phiên
+message GetBanGhiLoiRequest {
+    int64 id_phien  = 1;
+    bool  chua_xu_ly = 2;   // true = chỉ lấy bản ghi chưa xử lý
+    civilpro.common.PageRequest page = 3;
+}
+
+// Đánh dấu bản ghi lỗi đã xử lý thủ công
+message XuLyBanGhiLoiRequest {
+    int64  id_ban_ghi  = 1;
+    string nguoi_xu_ly = 2;
+    string ghi_chu     = 3;
+}
+
+// ================================================================
+// RESPONSE MESSAGES
+// ================================================================
+
+message TriggerDongBoResponse {
+    civilpro.common.GrpcResponse meta     = 1;
+    string                       ma_phien = 2;   // Mã phiên vừa tạo
+}
+
+message GetPhienResponse {
+    civilpro.common.GrpcResponse meta = 1;
+    PhienDongBoInfo              data = 2;
+}
+
+message GetLichSuPhienResponse {
+    civilpro.common.GrpcResponse meta = 1;
+    repeated PhienDongBoInfo     data = 2;
+    civilpro.common.PageInfo     page = 3;
+}
+
+message GetBanGhiLoiResponse {
+    civilpro.common.GrpcResponse meta  = 1;
+    repeated BanGhiLoiInfo       data  = 2;
+    civilpro.common.PageInfo     page  = 3;
+}
+
+message XuLyBanGhiLoiResponse {
+    civilpro.common.GrpcResponse meta    = 1;
+    bool                         success = 2;
+}
+
+// ================================================================
+// SERVICE DEFINITION
+// ================================================================
+
+service DongBoGrpcService {
+
+    // Kích hoạt đồng bộ thủ công (Admin dùng khi muốn sync ngay)
+    rpc TriggerDongBo (TriggerDongBoRequest)
+        returns (TriggerDongBoResponse);
+
+    // Lấy trạng thái phiên đồng bộ mới nhất (Dashboard "80% Hoàn thành")
+    rpc GetPhienMoiNhat (civilpro.common.EmptyRequest)
+        returns (GetPhienResponse);
+
+    // Lấy chi tiết một phiên theo mã
+    rpc GetPhienByMa (GetPhienByMaRequest)
+        returns (GetPhienResponse);
+
+    // Lấy lịch sử tất cả phiên đồng bộ
+    rpc GetLichSuPhien (GetLichSuPhienRequest)
+        returns (GetLichSuPhienResponse);
+
+    // Lấy danh sách bản ghi lỗi trong một phiên
+    rpc GetBanGhiLoi (GetBanGhiLoiRequest)
+        returns (GetBanGhiLoiResponse);
+
+    // Đánh dấu bản ghi lỗi đã xử lý thủ công
+    rpc XuLyBanGhiLoi (XuLyBanGhiLoiRequest)
+        returns (XuLyBanGhiLoiResponse);
+}

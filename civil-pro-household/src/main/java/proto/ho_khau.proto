@@ -1,0 +1,123 @@
+syntax = "proto3";
+
+// ================================================================
+// CIVIL-PRO — HỘ KHẨU SERVICE PROTO
+//
+// Caller  : CuTruService, BienDongService, ThongKeService
+// Provider: civil-pro-ho-khau  (gRPC port 9083)
+//
+// Package java : vn.civilpro.grpc.hokhau
+// ================================================================
+
+package civilpro.hokhau;
+
+option java_multiple_files  = true;
+option java_package         = "vn.civil.grpc.hokhau";
+option java_outer_classname = "HoKhauProto";
+
+import "common.proto";
+
+// ================================================================
+// DATA MESSAGES
+// ================================================================
+
+// Thông tin hộ khẩu
+message HoKhauInfo {
+    int64  id             = 1;
+    string ma_ho_khau     = 2;   // HK-XXXXXX
+    string so_ho_khau     = 3;   // Số sổ hộ khẩu chính thức
+    int64  id_chu_ho      = 4;
+    string ten_chu_ho     = 5;
+    string ma_dvhc        = 6;
+    string dia_chi_day_du = 7;
+    int32  so_thanh_vien  = 8;
+    string loai_ho        = 9;   // HO_NGHEO/HO_CAN_NGHEO/HO_BINH_THUONG
+    string ngay_dang_ky   = 10;  // ISO: yyyy-MM-dd
+    string trang_thai     = 11;  // HOAT_DONG/DA_TACH/DA_NHAP
+}
+
+// Thông tin một thành viên trong hộ khẩu
+message ThanhVienInfo {
+    int64  id               = 1;
+    int64  id_cong_dan      = 2;
+    string ho_ten           = 3;
+    string quan_he_chu_ho   = 4;   // CHU_HO/VO/CHONG/CON/...
+    string ngay_nhap_ho     = 5;   // ISO: yyyy-MM-dd
+    string ngay_tach_ho     = 6;   // ISO: yyyy-MM-dd (rỗng nếu đang ở)
+    int32  trang_thai       = 7;   // 1=Đang ở, 0=Đã tách
+}
+
+// ================================================================
+// REQUEST MESSAGES
+// ================================================================
+
+message GetHoKhauByIdRequest {
+    int64 id = 1;
+}
+
+message GetHoKhauByMaRequest {
+    string ma_ho_khau = 1;
+}
+
+// Tìm hộ khẩu của một công dân (đang là thành viên tích cực)
+message GetHoKhauCuaCongDanRequest {
+    int64 id_cong_dan = 1;
+}
+
+// Lấy danh sách thành viên trong hộ (dùng khi hiển thị sơ đồ hộ khẩu)
+message GetThanhVienRequest {
+    int64 id_ho_khau = 1;
+    bool  chi_hien_tai = 2;   // true = chỉ lấy thành viên đang ở
+}
+
+// Đếm số hộ theo ĐVHC
+message CountHoByDvhcRequest {
+    string ma_dvhc = 1;
+}
+
+// ================================================================
+// RESPONSE MESSAGES
+// ================================================================
+
+message GetHoKhauResponse {
+    civilpro.common.GrpcResponse meta = 1;
+    HoKhauInfo                   data = 2;
+}
+
+message GetThanhVienResponse {
+    civilpro.common.GrpcResponse meta = 1;
+    repeated ThanhVienInfo       data = 2;
+    int32                        total = 3;
+}
+
+message CountHoResponse {
+    civilpro.common.GrpcResponse meta  = 1;
+    int64                        count = 2;
+}
+
+// ================================================================
+// SERVICE DEFINITION
+// ================================================================
+
+service HoKhauGrpcService {
+
+    // Lấy thông tin hộ khẩu theo ID
+    rpc GetById (GetHoKhauByIdRequest)
+        returns (GetHoKhauResponse);
+
+    // Lấy thông tin hộ khẩu theo mã HK
+    rpc GetByMa (GetHoKhauByMaRequest)
+        returns (GetHoKhauResponse);
+
+    // Tìm hộ khẩu hiện tại của một công dân
+    rpc GetHoKhauCuaCongDan (GetHoKhauCuaCongDanRequest)
+        returns (GetHoKhauResponse);
+
+    // Lấy danh sách thành viên trong hộ
+    rpc GetThanhVien (GetThanhVienRequest)
+        returns (GetThanhVienResponse);
+
+    // Đếm số hộ theo ĐVHC (ThongKe Service dùng)
+    rpc CountHoByDvhc (CountHoByDvhcRequest)
+        returns (CountHoResponse);
+}

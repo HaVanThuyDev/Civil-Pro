@@ -1,0 +1,153 @@
+server:
+  port: 8000
+
+spring:
+  application:
+    name: gateway
+
+  data:
+    redis:
+      host: localhost
+      port: 6379
+
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+          lower-case-service-id: true
+
+      httpclient:
+        ssl:
+          use-insecure-trust-manager: true
+
+      routes:
+        - id: block-actuator
+          uri: no://op
+          predicates:
+            - Path=/actuator/**
+          filters:
+            - name: SetStatus
+              args:
+                status: 403
+
+        - id: auth-service
+          uri: lb://AUTH-SERVICE
+          predicates:
+            - Path=/application/auth/**, /application/users/**
+          filters:
+            - RewritePath=/application/(?<segment>.*), /${segment}
+            - name: RequestRateLimiter
+              args:
+                redis-rate-limiter.replenishRate: 5
+                redis-rate-limiter.burstCapacity: 10
+                key-resolver: "#{@authKeyResolver}"
+
+        - id: citizen-service
+          uri: lb://CITIZEN-SERVICE
+          predicates:
+            - Path=/application/citizen/api/**
+          filters:
+            - RewritePath=/application/citizen/(?<segment>.*), /${segment}
+            - name: RequestRateLimiter
+              args:
+                redis-rate-limiter.replenishRate: 10
+                redis-rate-limiter.burstCapacity: 20
+                key-resolver: "#{@authKeyResolver}"
+
+        - id: household-service
+          uri: lb://HOUSEHOLD-SERVICE
+          predicates:
+            - Path=/application/household/api/**
+          filters:
+            - RewritePath=/application/household/(?<segment>.*), /${segment}
+            - name: RequestRateLimiter
+              args:
+                redis-rate-limiter.replenishRate: 10
+                redis-rate-limiter.burstCapacity: 20
+                key-resolver: "#{@authKeyResolver}"
+
+        - id: fluctuations-service
+          uri: lb://FLUCTUATIONS-SERVICE
+          predicates:
+            - Path=/application/fluctuations/api/**
+          filters:
+            - RewritePath=/application/fluctuations/(?<segment>.*), /${segment}
+            - name: RequestRateLimiter
+              args:
+                redis-rate-limiter.replenishRate: 10
+                redis-rate-limiter.burstCapacity: 20
+                key-resolver: "#{@authKeyResolver}"
+
+        - id: statistical-service
+          uri: lb://STATISTICAL-SERVICE
+          predicates:
+            - Path=/application/statistical/api/**
+          filters:
+            - RewritePath=/application/statistical/(?<segment>.*), /${segment}
+            - name: RequestRateLimiter
+              args:
+                redis-rate-limiter.replenishRate: 10
+                redis-rate-limiter.burstCapacity: 20
+                key-resolver: "#{@authKeyResolver}"
+
+        - id: synchronized-service
+          uri: lb://SYNCHRONIZED-SERVICE
+          predicates:
+            - Path=/application/synchronized/api/**
+          filters:
+            - RewritePath=/application/synchronized/(?<segment>.*), /${segment}
+            - name: RequestRateLimiter
+              args:
+                redis-rate-limiter.replenishRate: 10
+                redis-rate-limiter.burstCapacity: 20
+                key-resolver: "#{@authKeyResolver}"
+
+        - id: vnpay-service
+          uri: lb://VNPAY-SERVICE
+          predicates:
+            - Path=/application/vnpay/**
+          filters:
+            - RewritePath=/application/vnpay/(?<segment>.*), /${segment}
+            - name: RequestRateLimiter
+              args:
+                redis-rate-limiter.replenishRate: 10
+                redis-rate-limiter.burstCapacity: 20
+                key-resolver: "#{@authKeyResolver}"
+
+      globalcors:
+        cors-configurations:
+          '[/**]':
+            allowedOriginPatterns:
+              - "*"
+            allowedMethods:
+              - GET
+              - POST
+              - PUT
+              - PATCH
+              - DELETE
+              - OPTIONS
+            allowedHeaders:
+              - "*"
+            allowCredentials: true
+            maxAge: 3600
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+    fetch-registry: true
+    register-with-eureka: true
+  instance:
+    prefer-ip-address: true
+    hostname: localhost
+    instance-id: ${spring.application.name}:${server.port}
+
+civil-pro:
+  jwt:
+    secret: civil-pro-secret-key-minimum-32-characters-long
+
+logging:
+  level:
+    org.springframework.cloud.gateway: INFO
+    reactor.netty: INFO
