@@ -19,6 +19,7 @@ vn\civilpro\model\entity\SystemLog$SystemLogBuilder.class
 vn\civilpro\repository\RefreshTokenRepository.class
 vn\civilpro\auth\grpc\proto\AuthServiceGrpc$2.class
 vn\civilpro\auth\grpc\proto\LogoutRequest.class
+vn\civilpro\config\CorsConfig.class
 vn\civilpro\auth\grpc\proto\AuthServiceGrpc$AuthServiceBaseDescriptorSupplier.class
 vn\civilpro\model\entity\User.class
 vn\civilpro\model\entity\Notification.class
@@ -40,6 +41,7 @@ vn\civilpro\utils\Constants$ARTICLE_FEATURED.class
 vn\civilpro\auth\grpc\proto\ValidateTokenRequest$1.class
 vn\civilpro\utils\Constants.class
 vn\civilpro\auth\grpc\proto\RefreshTokenRequest$Builder.class
+vn\civilpro\repository\LoginAttemptRepository.class
 vn\civilpro\auth\grpc\proto\LoginRequest$1.class
 vn\civilpro\common\response\ApiResponse$PageMeta$PageMetaBuilder.class
 vn\civilpro\auth\grpc\proto\AuthServiceGrpc$AuthServiceStub.class
@@ -53,6 +55,7 @@ vn\civilpro\auth\grpc\proto\LogoutRequestOrBuilder.class
 vn\civilpro\auth\grpc\proto\AuthServiceGrpc$1.class
 vn\civilpro\auth\grpc\proto\LogoutResponseOrBuilder.class
 vn\civilpro\model\dto\UserDto$UserDtoBuilder.class
+vn\civilpro\model\entity\LoginAttempt.class
 vn\civilpro\auth\grpc\proto\RegisterRequest.class
 vn\civilpro\helper\MediaStorageService.class
 vn\civilpro\auth\grpc\proto\ValidateTokenRequestOrBuilder.class
@@ -88,6 +91,7 @@ vn\civilpro\model\dto\request\LoginRequest.class
 vn\civilpro\security\JwtAuthenticationFilter.class
 vn\civilpro\exception\ResourceNotFoundException.class
 vn\civilpro\auth\grpc\proto\ValidateTokenRequest$Builder.class
+vn\civilpro\model\entity\LoginAttempt$LoginAttemptBuilder.class
 vn\civilpro\model\entity\SystemLog.class
 vn\civilpro\model\entity\Notification$NotificationBuilder.class
 vn\civilpro\repository\SystemLogRepository.class

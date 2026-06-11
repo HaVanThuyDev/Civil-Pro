@@ -10,7 +10,7 @@ import vn.civilpro.congdan.entity.CongDan;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2026-05-23T22:41:33+0700",
+    date = "2026-05-24T09:24:39+0700",
     comments = "version: 1.5.5.Final, compiler: javac, environment: Java 21.0.5 (Oracle Corporation)"
 )
 @Component

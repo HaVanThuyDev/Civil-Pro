@@ -11,7 +11,7 @@ import java.time.Instant;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ApiResponse<T> {
 
-    private final boolean success;
+    private  boolean success;
     private final int code;
     private final String message;
     private final T data;

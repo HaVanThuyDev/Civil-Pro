@@ -27,11 +27,6 @@
         <module name="civil-pro-household" />
       </profile>
     </annotationProcessing>
-    <bytecodeTargetLevel>
-      <module name="civil-pro-proto" target="21" />
-      <module name="civil_pro-auth1" target="21" />
-      <module name="demo" target="21" />
-    </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
@@ -41,11 +36,9 @@
       <module name="civil-pro-fluctuations" options="-parameters" />
       <module name="civil-pro-gateway" options="-parameters" />
       <module name="civil-pro-household" options="-parameters" />
-      <module name="civil-pro-proto" options="-parameters" />
       <module name="civil-pro-statistical" options="-parameters" />
       <module name="civil-pro-synchronized" options="-parameters" />
       <module name="config-server" options="-parameters" />
-      <module name="demo" options="-parameters" />
       <module name="registry" options="-parameters" />
     </option>
   </component>

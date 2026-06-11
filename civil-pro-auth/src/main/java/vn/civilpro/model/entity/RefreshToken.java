@@ -29,7 +29,7 @@ public class RefreshToken {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(
-            name = "USER_ID", // Mapping HOA
+            name = "USER_ID",
             nullable = false,
             foreignKey = @ForeignKey(name = "FK_RT_USER")
     )

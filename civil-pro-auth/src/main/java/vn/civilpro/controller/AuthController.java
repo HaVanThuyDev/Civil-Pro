@@ -23,31 +23,28 @@ public class AuthController {
     private final AuthServiceImpl authService;
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@Valid @RequestBody LoginRequest req, HttpServletRequest http) {
-        return ResponseEntity.ok(authService.login(req, getClientIp(http)));
+    public ResponseEntity<?> login(@Valid @RequestBody LoginRequest request, HttpServletRequest http) {
+        return ResponseEntity.ok(authService.login(request, getClientIp(http)));
     }
 
     @PostMapping("/register")
-//    @PreAuthorize("hasAuthority('USER_CREATE')")
-    public ResponseEntity<?> register(@Valid @RequestBody RegisterRequest req,
-                                      @AuthenticationPrincipal UserDetails user) {
-        String creator = Optional.ofNullable(user).map(UserDetails::getUsername).orElse("SYSTEM");
-        return ResponseEntity.status(HttpStatus.CREATED).body(authService.register(req, creator));
+    public ResponseEntity<?> register(@Valid @RequestBody RegisterRequest request,  @AuthenticationPrincipal UserDetails user) {
+        String register = Optional.ofNullable(user).map(UserDetails::getUsername).orElse("SYSTEM");
+        return ResponseEntity.status(HttpStatus.CREATED).body(authService.register(request, register));
     }
 
     @PostMapping("/refresh-token")
-    public ResponseEntity<?> refresh(@Valid @RequestBody RefreshTokenRequest req) {
-        return ResponseEntity.ok(authService.refreshToken(req));
+    public ResponseEntity<?> refresh(@Valid @RequestBody RefreshTokenRequest request) {
+        return ResponseEntity.ok(authService.refreshToken(request));
     }
 
     @PostMapping("/logout")
     public ResponseEntity<?> logout(@RequestHeader("Authorization") String header,
-                                    @RequestBody(required = false) RefreshTokenRequest req,
+                                    @RequestBody(required = false) RefreshTokenRequest request,
                                     @AuthenticationPrincipal UserDetails user) {
         String access = header.startsWith("Bearer ") ? header.substring(7) : header;
-        String refresh = Optional.ofNullable(req).map(RefreshTokenRequest::getRefreshToken).orElse(null);
+        String refresh = Optional.ofNullable(request).map(RefreshTokenRequest::getRefreshToken).orElse(null);
         String username = Optional.ofNullable(user).map(UserDetails::getUsername).orElse(null);
-
         authService.logout(access, refresh, username);
         return ResponseEntity.noContent().build();
     }

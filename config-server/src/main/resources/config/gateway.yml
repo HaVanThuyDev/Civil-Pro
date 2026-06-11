@@ -32,11 +32,11 @@ spring:
                 status: 403
 
         - id: auth-service
-          uri: lb://AUTH-SERVICE
+          uri: lb://CIVIL-PRO-AUTH
           predicates:
-            - Path=/application/auth/**, /application/users/**
+            - Path=/civil/auth/**, /civil/users/**
           filters:
-            - RewritePath=/application/(?<segment>.*), /${segment}
+            - RewritePath=/civil/(?<segment>.*), /${segment}
             - name: RequestRateLimiter
               args:
                 redis-rate-limiter.replenishRate: 5
@@ -46,9 +46,9 @@ spring:
         - id: citizen-service
           uri: lb://CITIZEN-SERVICE
           predicates:
-            - Path=/application/citizen/api/**
+            - Path=/civil/citizen/api/**
           filters:
-            - RewritePath=/application/citizen/(?<segment>.*), /${segment}
+            - RewritePath=/civil/citizen/(?<segment>.*), /${segment}
             - name: RequestRateLimiter
               args:
                 redis-rate-limiter.replenishRate: 10
@@ -58,9 +58,9 @@ spring:
         - id: household-service
           uri: lb://HOUSEHOLD-SERVICE
           predicates:
-            - Path=/application/household/api/**
+            - Path=/civil/household/**
           filters:
-            - RewritePath=/application/household/(?<segment>.*), /${segment}
+            - RewritePath=/civil/household/(?<segment>.*), /${segment}
             - name: RequestRateLimiter
               args:
                 redis-rate-limiter.replenishRate: 10
@@ -70,9 +70,9 @@ spring:
         - id: fluctuations-service
           uri: lb://FLUCTUATIONS-SERVICE
           predicates:
-            - Path=/application/fluctuations/api/**
+            - Path=/civil/fluctuations/**
           filters:
-            - RewritePath=/application/fluctuations/(?<segment>.*), /${segment}
+            - RewritePath=/civil/fluctuations/(?<segment>.*), /${segment}
             - name: RequestRateLimiter
               args:
                 redis-rate-limiter.replenishRate: 10
@@ -82,9 +82,9 @@ spring:
         - id: statistical-service
           uri: lb://STATISTICAL-SERVICE
           predicates:
-            - Path=/application/statistical/api/**
+            - Path=/civil/statistical/**
           filters:
-            - RewritePath=/application/statistical/(?<segment>.*), /${segment}
+            - RewritePath=/civil/statistical/(?<segment>.*), /${segment}
             - name: RequestRateLimiter
               args:
                 redis-rate-limiter.replenishRate: 10
@@ -94,9 +94,9 @@ spring:
         - id: synchronized-service
           uri: lb://SYNCHRONIZED-SERVICE
           predicates:
-            - Path=/application/synchronized/api/**
+            - Path=/civil/synchronized/api/**
           filters:
-            - RewritePath=/application/synchronized/(?<segment>.*), /${segment}
+            - RewritePath=/civil/synchronized/(?<segment>.*), /${segment}
             - name: RequestRateLimiter
               args:
                 redis-rate-limiter.replenishRate: 10
@@ -106,9 +106,9 @@ spring:
         - id: vnpay-service
           uri: lb://VNPAY-SERVICE
           predicates:
-            - Path=/application/vnpay/**
+            - Path=/civil/vnpay/**
           filters:
-            - RewritePath=/application/vnpay/(?<segment>.*), /${segment}
+            - RewritePath=/civil/vnpay/(?<segment>.*), /${segment}
             - name: RequestRateLimiter
               args:
                 redis-rate-limiter.replenishRate: 10

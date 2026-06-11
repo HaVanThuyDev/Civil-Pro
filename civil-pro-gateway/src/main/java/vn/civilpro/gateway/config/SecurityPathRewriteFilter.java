@@ -11,9 +11,9 @@ public class SecurityPathRewriteFilter implements GlobalFilter, Ordered {
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
         String originalPath = exchange.getRequest().getURI().getPath();
-        String newPath = originalPath.startsWith("/application")
+        String newPath = originalPath.startsWith("/civil")
                 ? originalPath
-                : "/application" + originalPath;
+                : "/civil" + originalPath;
 
         exchange = exchange.mutate()
                 .request(exchange.getRequest().mutate().path(newPath).build())

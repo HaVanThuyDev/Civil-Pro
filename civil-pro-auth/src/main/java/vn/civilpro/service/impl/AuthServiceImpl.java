@@ -41,23 +41,18 @@ public class AuthServiceImpl {
     @Value("${civil-pro.security.lockout-duration-minutes:30}")
     private int lockoutMinutes;
 
-    // Blacklist token trong memory (tạm thời thay Redis)
     private final Map<String, Long> tokenBlacklist = new ConcurrentHashMap<>();
 
     @Transactional
     public AuthResponse login(LoginRequest request, String ip) {
         String username = request.getUsername();
 
-        // Kiểm tra user tồn tại
-        User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> handleLoginFail(username, "INVALID_CREDENTIALS", ip));
+        User user = userRepository.findByUsername(username).orElseThrow(() -> handleLoginFail(username, "INVALID_CREDENTIALS", ip));
 
-        // Kiểm tra account bị khóa vĩnh viễn
         if (user.getStatus() == 0) {
             throw handleLoginFail(username, "ACCOUNT_LOCKED", ip);
         }
 
-        // Lấy hoặc tạo mới login attempt
         LoginAttempt attempt = loginAttemptRepository.findByUsername(username)
                 .orElse(LoginAttempt.builder()
                         .username(username)
@@ -171,7 +166,6 @@ public class AuthServiceImpl {
                         })
         );
 
-        // Blacklist access token
         Optional.ofNullable(access).ifPresent(this::blacklistToken);
 
         saveLog(SystemLog.info(username, "AUTH", "LOGOUT_SUCCESS", null));

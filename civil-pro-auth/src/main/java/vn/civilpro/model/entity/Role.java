@@ -2,12 +2,11 @@ package vn.civilpro.model.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
-
 import java.util.HashSet;
 import java.util.Set;
 
 @Entity
-@Table(name = "ROLES") // Tên bảng HOA
+@Table(name = "ROLES")
 @Getter @Setter
 @NoArgsConstructor @AllArgsConstructor
 @Builder
@@ -32,13 +31,13 @@ public class Role {
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
-            name = "ROLE_PERMISSIONS", // Bảng trung gian viết HOA
+            name = "ROLE_PERMISSIONS",
             joinColumns = @JoinColumn(
-                    name = "ROLE_ID", // Khóa ngoại trỏ tới bảng ROLES
+                    name = "ROLE_ID",
                     foreignKey = @ForeignKey(name = "FK_RP_ROLE")
             ),
             inverseJoinColumns = @JoinColumn(
-                    name = "PERMISSION_ID", // Khóa ngoại trỏ tới bảng PERMISSIONS
+                    name = "PERMISSION_ID",
                     foreignKey = @ForeignKey(name = "FK_RP_PERMISSION")
             )
     )
