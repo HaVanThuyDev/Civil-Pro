@@ -1,12 +1,12 @@
 server:
-  port: 6000
+  port: 5000
 
 spring:
   application:
-    name: civil-pro-auth
+    name: civil-pro-citizen
 
   datasource:
-    url: jdbc:mysql://localhost:3306/DB_AUTH?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Ho_Chi_Minh
+    url: jdbc:mysql://localhost:3306/DB_CONG_DAN?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Ho_Chi_Minh
     username: root
     password: 11032003
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -26,6 +26,11 @@ spring:
     locations: classpath:db/migration
     baseline-on-migrate: true
 
+civil-pro:
+  jwt:
+    secret: my-secret-key-123456789012345678901234
+    access-token-expiration: 86400000
+    refresh-token-expiration: 604800000
 
 eureka:
   client:
@@ -34,19 +39,9 @@ eureka:
   instance:
     prefer-ip-address: true
 
-civil-pro:
-  jwt:
-    secret: my-secret-key-123456789012345678901234
-    access-token-expiration: 86400000
-    refresh-token-expiration: 604800000
-
-  security:
-    max-login-attempts: 5
-    lockout-duration-minutes: 30
-
 grpc:
   server:
-    port: 9102
+    port: 9101
 
 management:
   endpoints:
