@@ -1,4 +1,4 @@
-package vn.civilpro.congdan.dto.response;
+package vn.civilpro.congdan.model.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Builder;

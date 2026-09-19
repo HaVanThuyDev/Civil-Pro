@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Builder;
 import lombok.Data;
+import vn.civilpro.model.entity.Role;
+
 import java.time.LocalDateTime;
 import java.util.Set;
 
@@ -22,7 +24,7 @@ public class UserDto {
     private Integer status;
     private String  statusLabel;
 
-    private Set<String> roles;
+    private Set<Role> roles;
     private Set<String> authorities;
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")

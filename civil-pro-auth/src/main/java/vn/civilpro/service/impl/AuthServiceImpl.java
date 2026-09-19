@@ -250,13 +250,13 @@ public class AuthServiceImpl {
                 .phoneNumber(u.getPhoneNumber())
                 .administrativeUnitCode(u.getAdministrativeUnitCode())
                 .status(u.getStatus())
-                .roles(extractRoles(u))
+                .roles(u.getRoles().stream()
+                .collect(Collectors.toSet()))
                 .authorities(extractPerms(u))
                 .createdAt(u.getCreatedAt())
                 .lastLoginAt(u.getLastLoginAt())
                 .build();
     }
-
     private Set<String> extractRoles(User u) {
         return u.getRoles().stream()
                 .map(Role::getRoleCode)

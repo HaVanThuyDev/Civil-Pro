@@ -1,0 +1,13 @@
+syntax = "proto3";
+
+package civilpro.common;
+
+option java_multiple_files  = true;
+option java_package         = "vn.civil.grpc.common";
+option java_outer_classname = "CommonProto";
+
+message GrpcResponse {
+  bool   success = 1;
+  int32  code    = 2;
+  string message = 3;
+}

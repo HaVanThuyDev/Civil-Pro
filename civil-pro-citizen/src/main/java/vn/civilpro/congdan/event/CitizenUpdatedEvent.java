@@ -1,4 +1,11 @@
 package vn.civilpro.congdan.event;
 
-public class CitizenUpdatedEvent {
+import vn.civilpro.congdan.model.entity.Citizen;
+
+/**
+ * Domain event nội bộ (Spring ApplicationEvent), KHÔNG phải Kafka event.
+ * Được publish trong transaction, chỉ thực sự đẩy sang Kafka sau khi commit
+ * thành công (xem CitizenEventPublisher#onCitizenUpdated).
+ */
+public record CitizenUpdatedEvent(Citizen citizen) {
 }

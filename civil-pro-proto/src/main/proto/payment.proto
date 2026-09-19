@@ -1,0 +1,173 @@
+syntax = "proto3";
+
+// ================================================================
+// CIVIL-PRO — BANK-GRADE TAX PAYMENT SERVICE PROTO
+//
+// Caller  : Gateway, Client, Citizen Portal
+// Provider: civil-pro-pay (gRPC port 9089)
+// ================================================================
+
+package civilpro.payment;
+
+option java_multiple_files  = true;
+option java_package         = "vn.civil.grpc.payment";
+option java_outer_classname = "PaymentProto";
+
+import "common.proto";
+
+// ================================================================
+// ENUMS
+// ================================================================
+
+enum TaxCategory {
+    TAX_CATEGORY_UNSPECIFIED      = 0;
+    PERSONAL_INCOME_TAX           = 1; // Thuế Thu nhập cá nhân (TNCN)
+    VALUE_ADDED_TAX               = 2; // Thuế Giá trị gia tăng (GTGT)
+    SPECIAL_CONSUMPTION_TAX       = 3; // Thuế Tiêu thụ đặc biệt
+    NON_AGRI_LAND_TAX             = 4; // Thuế Sử dụng đất phi nông nghiệp
+    AGRI_LAND_TAX                 = 5; // Thuế Sử dụng đất nông nghiệp
+    REAL_ESTATE_TRANSFER_TAX      = 6; // Thuế Chuyển nhượng Bất động sản
+    SECURITIES_TRANSFER_TAX       = 7; // Thuế Chuyển nhượng Chứng khoán
+}
+
+enum OrderStatus {
+    ORDER_STATUS_UNSPECIFIED = 0;
+    ORDER_PENDING            = 1;
+    ORDER_PROCESSING         = 2;
+    ORDER_COMPLETED          = 3;
+    ORDER_FAILED             = 4;
+    ORDER_CANCELLED          = 5;
+}
+
+enum TransactionStatus {
+    TXN_STATUS_UNSPECIFIED = 0;
+    TXN_PENDING            = 1;
+    TXN_SUCCESS            = 2;
+    TXN_FAILED             = 3;
+    TXN_REVERSED           = 4;
+}
+
+// ================================================================
+// DATA MESSAGES
+// ================================================================
+
+message PaymentOrderInfo {
+    int64       id                    = 1;
+    string      order_code            = 2;
+    TaxCategory tax_category          = 3;
+    string      taxpayer_national_id  = 4;
+    string      taxpayer_name         = 5;
+    string      tax_code              = 6;
+    double      amount                = 7;
+    string      currency              = 8;
+    string      fiscal_period         = 9;
+    OrderStatus status                = 10;
+    string      idempotency_key       = 11;
+    string      receipt_number        = 12;
+    string      created_at            = 13;
+    string      completed_at          = 14;
+}
+
+message PaymentTransactionInfo {
+    int64             id                    = 1;
+    string            txn_reference         = 2;
+    int64             order_id              = 3;
+    string            order_code            = 4;
+    string            payment_method        = 5;
+    string            debit_account         = 6;
+    string            credit_account        = 7;
+    double            amount                = 8;
+    double            fee                   = 9;
+    string            checksum              = 10;
+    TransactionStatus status                = 11;
+    string            gateway_txn_id        = 12;
+    string            completed_at          = 13;
+}
+
+message TaxObligationInfo {
+    string      obligation_id   = 1;
+    TaxCategory tax_category    = 2;
+    string      description     = 3;
+    double      amount_due      = 4;
+    string      due_date        = 5;
+    string      fiscal_period   = 6;
+    string      tax_code        = 7;
+}
+
+// ================================================================
+// REQUEST MESSAGES
+// ================================================================
+
+message CreatePaymentOrderRequest {
+    TaxCategory tax_category          = 1;
+    string      taxpayer_national_id  = 2;
+    string      taxpayer_name         = 3;
+    string      tax_code              = 4;
+    double      amount                = 5;
+    string      fiscal_period         = 6;
+    string      notes                 = 7;
+}
+
+message ProcessPaymentRequest {
+    string order_code       = 1;
+    string idempotency_key  = 2;
+    string payment_method   = 3; // BANK_TRANSFER, VNPAY, WALLET
+    string debit_account    = 4;
+    string auth_token       = 5; // JWT token for authentication validation
+}
+
+message GetPaymentStatusRequest {
+    string reference = 1; // Order code or Transaction reference
+}
+
+message GetTaxObligationsRequest {
+    string taxpayer_national_id = 1;
+    string tax_code             = 2;
+}
+
+// ================================================================
+// RESPONSE MESSAGES
+// ================================================================
+
+message CreatePaymentOrderResponse {
+    civilpro.common.GrpcResponse meta  = 1;
+    PaymentOrderInfo             order = 2;
+}
+
+message ProcessPaymentResponse {
+    civilpro.common.GrpcResponse meta        = 1;
+    PaymentOrderInfo             order       = 2;
+    PaymentTransactionInfo       transaction = 3;
+    string                       receipt_url = 4;
+}
+
+message GetPaymentStatusResponse {
+    civilpro.common.GrpcResponse meta        = 1;
+    PaymentOrderInfo             order       = 2;
+    PaymentTransactionInfo       transaction = 3;
+}
+
+message GetTaxObligationsResponse {
+    civilpro.common.GrpcResponse meta             = 1;
+    repeated TaxObligationInfo   obligations      = 2;
+    double                       total_amount_due = 3;
+}
+
+// ================================================================
+// SERVICE DEFINITION
+// ================================================================
+
+service PaymentGrpcService {
+
+    rpc CreateOrder (CreatePaymentOrderRequest)
+        returns (CreatePaymentOrderResponse);
+
+    rpc ProcessPayment (ProcessPaymentRequest)
+        returns (ProcessPaymentResponse);
+
+    rpc GetStatus (GetPaymentStatusRequest)
+        returns (GetPaymentStatusResponse);
+
+    rpc GetTaxObligations (GetTaxObligationsRequest)
+        returns (GetTaxObligationsResponse);
+}

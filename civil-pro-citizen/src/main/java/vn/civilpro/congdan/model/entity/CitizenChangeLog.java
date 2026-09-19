@@ -1,4 +1,4 @@
-package vn.civilpro.congdan.entity;
+package vn.civilpro.congdan.model.entity;
 
 import jakarta.persistence.*;
 import lombok.*;

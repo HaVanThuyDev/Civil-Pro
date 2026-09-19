@@ -8,15 +8,17 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import vn.civilpro.common.enums.ErrorCode;
-import vn.civilpro.common.exception.DuplicateResourceException;
-import vn.civilpro.common.exception.ResourceNotFoundException;
-import vn.civilpro.congdan.dto.response.CongDanDetailResponse;
-import vn.civilpro.congdan.entity.CongDan;
-import vn.civilpro.congdan.event.CitizenEventPublisher;
-import vn.civilpro.congdan.mapper.CongDanMapper;
+import vn.civilpro.congdan.model.enums.ErrorCode;
+import vn.civilpro.congdan.exception.DuplicateResourceException;
+import vn.civilpro.congdan.exception.ResourceNotFoundException;
+import vn.civilpro.congdan.model.dto.request.CreateCitizenRequest;
+import vn.civilpro.congdan.model.dto.response.CitizenDetailResponse;
+import vn.civilpro.congdan.model.entity.Citizen;
+import org.springframework.context.ApplicationEventPublisher;
+import vn.civilpro.congdan.mapper.CitizenMapper;
 import vn.civilpro.congdan.repository.CitizenRepository;
 import vn.civilpro.congdan.service.impl.CitizenServiceImpl;
+import vn.civilpro.congdan.util.CitizenCodeGenerator;
 
 import java.time.LocalDate;
 import java.util.Optional;
@@ -25,202 +27,137 @@ import static org.assertj.core.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
-/**
- * ================================================================
- * UNIT TEST: CONG DAN SERVICE
- * Test isolation: mock tất cả dependencies
- * ================================================================
- */
 @ExtendWith(MockitoExtension.class)
-@DisplayName("CongDanService Unit Tests")
+@DisplayName("CitizenService Unit Tests")
 class CitizenServiceImplTest {
 
     @Mock
-    private CitizenRepository congDanRepository;
+    private CitizenRepository citizenRepository;
 
     @Mock
-    private CongDanMapper congDanMapper;
+    private CitizenMapper citizenMapper;
 
     @Mock
-    private CitizenEventPublisher eventPublisher;
+    private ApplicationEventPublisher eventPublisher;
+
+    @Mock
+    private CitizenCodeGenerator citizenCodeGenerator;
 
     @InjectMocks
-    private CitizenServiceImpl congDanService;
+    private CitizenServiceImpl citizenService;
 
-    // ---- Test fixtures ----
-
-    private CreateCongDanRequest validRequest;
-    private CongDan savedEntity;
-    private CongDanDetailResponse detailResponse;
+    private CreateCitizenRequest validRequest;
+    private Citizen savedEntity;
+    private CitizenDetailResponse detailResponse;
 
     @BeforeEach
     void setUp() {
-        validRequest = new CreateCongDanRequest();
-        validRequest.setHoTen("Nguyễn Văn A");
-        validRequest.setGioiTinh(1);
-        validRequest.setNgaySinh(LocalDate.of(1990, 5, 15));
-        validRequest.setSoCccd("038090012345");
-        validRequest.setMaDvhcThuongTru("TP-002");
-        validRequest.setDiaChiThuongTru("Số 12, Đường 3/2, P.1");
+        // Mock mã định danh tự động sinh ra
+        lenient().when(citizenCodeGenerator.generate()).thenReturn("CTZ202608070001");
 
-        savedEntity = CongDan.builder()
+        validRequest = new CreateCitizenRequest();
+        validRequest.setFullName("Nguyen Van A");
+        validRequest.setGender(1);
+        validRequest.setDateOfBirth(LocalDate.of(1990, 5, 15));
+        validRequest.setIdCardNumber("038090012345");
+        validRequest.setPermanentAreaCode("TP-002");
+        validRequest.setPermanentAddress("No. 12, Street 3/2, Ward 1");
+
+        savedEntity = Citizen.builder()
                 .id(1L)
-                .maCongDan("CD-100001")
-                .hoTen("Nguyễn Văn A")
-                .gioiTinh(1)
-                .ngaySinh(LocalDate.of(1990, 5, 15))
-                .soCccd("038090012345")
-                .maDvhcThuongTru("TP-002")
-                .trangThai("HOAT_DONG")
+                .citizenCode("CTZ202608070001")
+                .fullName("Nguyen Van A")
+                .gender(1)
+                .dateOfBirth(LocalDate.of(1990, 5, 15))
+                .idCardNumber("038090012345")
+                .permanentAreaCode("TP-002")
+                .status(1)
                 .build();
 
-        detailResponse = CongDanDetailResponse.builder()
+        detailResponse = CitizenDetailResponse.builder()
                 .id(1L)
-                .maCongDan("CD-100001")
-                .hoTen("Nguyễn Văn A")
-                .trangThai("HOAT_DONG")
+                .citizenCode("CTZ202608070001")
+                .fullName("Nguyen Van A")
+                .status(1)
                 .build();
     }
 
-    // ================================================================
-    // TEST GROUP: CREATE
-    // ================================================================
-
     @Nested
-    @DisplayName("Tạo công dân mới")
+    @DisplayName("Create Citizen")
     class CreateTests {
 
         @Test
-        @DisplayName("Tạo thành công khi dữ liệu hợp lệ")
+        @DisplayName("Create successfully with valid request")
         void create_success_whenValidRequest() {
-            // Arrange
-            when(congDanRepository.existsBySoCccd("038090012345")).thenReturn(false);
-            when(congDanMapper.toEntity(any())).thenReturn(savedEntity);
-            when(congDanRepository.save(any())).thenReturn(savedEntity);
-            when(congDanMapper.toDetailResponse(any())).thenReturn(detailResponse);
-            doNothing().when(eventPublisher).publishCongDanCreated(any());
+            when(citizenRepository.existsByIdCardNumber("038090012345")).thenReturn(false);
+            when(citizenMapper.toEntity(any())).thenReturn(savedEntity);
+            when(citizenRepository.save(any())).thenReturn(savedEntity);
+            when(citizenMapper.toDetailResponse(any())).thenReturn(detailResponse);
+            CitizenDetailResponse result = citizenService.create(validRequest);
 
-            // Act
-            CongDanDetailResponse result = congDanService.create(validRequest);
-
-            // Assert
             assertThat(result).isNotNull();
             assertThat(result.getId()).isEqualTo(1L);
-            assertThat(result.getMaCongDan()).isEqualTo("CD-100001");
+            assertThat(result.getCitizenCode()).isEqualTo("CTZ202608070001");
 
-            verify(congDanRepository).existsBySoCccd("038090012345");
-            verify(congDanRepository).save(any(CongDan.class));
-            verify(eventPublisher).publishCongDanCreated(any(CongDan.class));
+            verify(citizenRepository).existsByIdCardNumber("038090012345");
+            verify(citizenRepository).save(any(Citizen.class));
+            verify(eventPublisher).publishEvent(any(Object.class));
+            verify(citizenCodeGenerator).generate();
         }
 
         @Test
-        @DisplayName("Ném DuplicateResourceException khi CCCD đã tồn tại")
-        void create_throwsDuplicateException_whenCccdExists() {
-            // Arrange
-            when(congDanRepository.existsBySoCccd("038090012345")).thenReturn(true);
+        @DisplayName("Throw DuplicateResourceException when ID card number already exists")
+        void create_throwsDuplicateException_whenIdCardExists() {
+            when(citizenRepository.existsByIdCardNumber("038090012345")).thenReturn(true);
 
-            // Act & Assert
-            assertThatThrownBy(() -> congDanService.create(validRequest))
+            assertThatThrownBy(() -> citizenService.create(validRequest))
                     .isInstanceOf(DuplicateResourceException.class)
                     .extracting(ex -> ((DuplicateResourceException) ex).getErrorCode())
                     .isEqualTo(ErrorCode.CD_CCCD_EXISTS);
 
-            verify(congDanRepository, never()).save(any());
-            verify(eventPublisher, never()).publishCongDanCreated(any());
+            verify(citizenRepository, never()).save(any());
+            verify(eventPublisher, never()).publishEvent(any());
         }
 
         @Test
-        @DisplayName("Không kiểm tra CCCD khi request không có CCCD")
-        void create_skipCccdCheck_whenNoCccd() {
-            // Arrange
-            validRequest.setSoCccd(null);
-            when(congDanMapper.toEntity(any())).thenReturn(savedEntity);
-            when(congDanRepository.save(any())).thenReturn(savedEntity);
-            when(congDanMapper.toDetailResponse(any())).thenReturn(detailResponse);
-            doNothing().when(eventPublisher).publishCongDanCreated(any());
+        @DisplayName("Skip ID card check when request does not contain ID card number")
+        void create_skipIdCardCheck_whenNoIdCardNumber() {
+            validRequest.setIdCardNumber(null);
+            when(citizenMapper.toEntity(any())).thenReturn(savedEntity);
+            when(citizenRepository.save(any())).thenReturn(savedEntity);
+            when(citizenMapper.toDetailResponse(any())).thenReturn(detailResponse);
 
-            // Act
-            congDanService.create(validRequest);
+            citizenService.create(validRequest);
 
-            // Assert: không gọi existsBySoCccd khi cccd null
-            verify(congDanRepository, never()).existsBySoCccd(any());
+            verify(citizenRepository, never()).existsByIdCardNumber(any());
         }
     }
 
-    // ================================================================
-    // TEST GROUP: GET BY ID
-    // ================================================================
-
     @Nested
-    @DisplayName("Lấy thông tin công dân theo ID")
+    @DisplayName("Get Citizen By ID")
     class GetByIdTests {
 
         @Test
-        @DisplayName("Trả về response khi tìm thấy")
+        @DisplayName("Return response when citizen is found")
         void getById_returnsResponse_whenFound() {
-            // Arrange
-            when(congDanRepository.findById(1L)).thenReturn(Optional.of(savedEntity));
-            when(congDanMapper.toDetailResponse(savedEntity)).thenReturn(detailResponse);
+            when(citizenRepository.findById(1L)).thenReturn(Optional.of(savedEntity));
+            when(citizenMapper.toDetailResponse(savedEntity)).thenReturn(detailResponse);
 
-            // Act
-            CongDanDetailResponse result = congDanService.getById(1L);
+            CitizenDetailResponse result = citizenService.getById(1L);
 
-            // Assert
             assertThat(result).isNotNull();
             assertThat(result.getId()).isEqualTo(1L);
         }
 
         @Test
-        @DisplayName("Ném ResourceNotFoundException khi không tìm thấy")
+        @DisplayName("Throw ResourceNotFoundException when citizen is not found")
         void getById_throwsNotFoundException_whenNotFound() {
-            // Arrange
-            when(congDanRepository.findById(999L)).thenReturn(Optional.empty());
+            when(citizenRepository.findById(999L)).thenReturn(Optional.empty());
 
-            // Act & Assert
-            assertThatThrownBy(() -> congDanService.getById(999L))
+            assertThatThrownBy(() -> citizenService.getById(999L))
                     .isInstanceOf(ResourceNotFoundException.class)
                     .extracting(ex -> ((ResourceNotFoundException) ex).getErrorCode())
                     .isEqualTo(ErrorCode.CD_NOT_FOUND);
-        }
-    }
-
-    // ================================================================
-    // TEST GROUP: KHAI TỬ
-    // ================================================================
-
-    @Nested
-    @DisplayName("Khai tử công dân")
-    class KhaiTuTests {
-
-        @Test
-        @DisplayName("Khai tử thành công, đổi trạng thái sang DA_CHET")
-        void khaiTu_success_changesStatusToKhaiTu() {
-            // Arrange
-            when(congDanRepository.findById(1L)).thenReturn(Optional.of(savedEntity));
-            when(congDanRepository.save(any())).thenReturn(savedEntity);
-            doNothing().when(eventPublisher).publishCongDanKhaiTu(any());
-
-            // Act
-            congDanService.khaiTu(1L, "Bệnh lý");
-
-            // Assert
-            assertThat(savedEntity.getTrangThai()).isEqualTo("DA_CHET");
-            assertThat(savedEntity.getNgayKhaiTu()).isEqualTo(LocalDate.now());
-            assertThat(savedEntity.getLyDoTrangThai()).isEqualTo("Bệnh lý");
-
-            verify(congDanRepository).save(savedEntity);
-            verify(eventPublisher).publishCongDanKhaiTu(savedEntity);
-        }
-
-        @Test
-        @DisplayName("Ném exception khi không tìm thấy công dân để khai tử")
-        void khaiTu_throwsNotFound_whenCongDanNotExist() {
-            when(congDanRepository.findById(999L)).thenReturn(Optional.empty());
-
-            assertThatThrownBy(() -> congDanService.khaiTu(999L, "Lý do"))
-                    .isInstanceOf(ResourceNotFoundException.class);
-
-            verify(congDanRepository, never()).save(any());
         }
     }
 }

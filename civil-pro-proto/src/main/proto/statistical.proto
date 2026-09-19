@@ -1,0 +1,145 @@
+syntax = "proto3";
+
+// ================================================================
+// CIVIL-PRO — STATISTICAL & REPORTING SERVICE PROTO
+//
+// Caller  : Gateway (Dashboard API aggregate)
+// Provider: civil-pro-statistical (gRPC port 9087)
+// ================================================================
+
+package civilpro.statistical;
+
+option java_multiple_files  = true;
+option java_package         = "vn.civil.grpc.statistical";
+option java_outer_classname = "StatisticalProto";
+
+import "common.proto";
+
+// ================================================================
+// DATA MESSAGES
+// ================================================================
+
+// Dashboard overall metrics card
+message DashboardSummary {
+    int64  total_population      = 1;
+    int64  total_households      = 2;
+    int64  temporary_residents   = 3;
+    int64  expiring_national_ids = 4;
+    double growth_rate_pct       = 5;
+    string updated_at            = 6;  // ISO datetime
+}
+
+// Administrative area demographic summary
+message AreaStatisticsRow {
+    string area_code       = 1;
+    string area_name       = 2;
+    int64  population      = 3;
+    int32  household_count = 4;
+    double density         = 5;  // persons/km2
+    int32  status          = 6;  // 1=Stable, 2=Fast Growth, 3=Volatile
+    string status_label    = 7;
+}
+
+message DataPoint {
+    string label = 1;  // "T1", "T2", ... "T12"
+    int64  value = 2;
+}
+
+message FluctuationSeries {
+    repeated DataPoint births = 1;
+    repeated DataPoint deaths = 2;
+}
+
+message AgeStructureChart {
+    double pct_0_14     = 1;
+    double pct_15_64    = 2;
+    double pct_65_plus  = 3;
+    int64  count_0_14   = 4;
+    int64  count_15_64  = 5;
+    int64  count_65_plus = 6;
+}
+
+message ReportHistoryInfo {
+    int64  id           = 1;
+    string report_code  = 2;
+    string report_type  = 3;
+    string format       = 4;  // PDF / EXCEL
+    string status       = 5;  // PROCESSING, COMPLETED, FAILED
+    string requested_by = 6;
+    string requested_at = 7;  // ISO datetime
+    string completed_at = 8;
+    string file_url     = 9;  // Download URL
+}
+
+// ================================================================
+// REQUEST MESSAGES
+// ================================================================
+
+message GetDashboardRequest {
+    string area_code = 1;  // Empty = entire jurisdiction
+}
+
+message GetPopulationTableRequest {
+    string parent_area_code          = 1;
+    int32  area_level                = 2;  // 2=District, 3=Ward/Commune
+    civilpro.common.PageRequest page = 3;
+}
+
+message RequestReportExportRequest {
+    string report_type                   = 1; // POPULATION, FLUCTUATION, EXPIRING_IDS
+    string format                        = 2; // PDF, EXCEL
+    string area_code                     = 3;
+    civilpro.common.DateRange date_range = 4;
+    string requested_by                  = 5;
+}
+
+message GetReportResultRequest {
+    string report_code = 1;
+}
+
+// ================================================================
+// RESPONSE MESSAGES
+// ================================================================
+
+message GetDashboardResponse {
+    civilpro.common.GrpcResponse meta              = 1;
+    DashboardSummary             summary           = 2;
+    FluctuationSeries            fluctuation_chart = 3;
+    AgeStructureChart            age_structure     = 4;
+}
+
+message GetPopulationTableResponse {
+    civilpro.common.GrpcResponse meta = 1;
+    repeated AreaStatisticsRow   data = 2;
+    civilpro.common.PageInfo     page = 3;
+}
+
+message RequestReportExportResponse {
+    civilpro.common.GrpcResponse meta        = 1;
+    string                       report_code = 2;
+    string                       status      = 3;
+}
+
+message GetReportResultResponse {
+    civilpro.common.GrpcResponse meta   = 1;
+    ReportHistoryInfo            report = 2;
+}
+
+// ================================================================
+// SERVICE DEFINITION
+// ================================================================
+
+service StatisticalGrpcService {
+
+    rpc GetDashboard (GetDashboardRequest)
+        returns (GetDashboardResponse);
+
+    rpc GetPopulationTable (GetPopulationTableRequest)
+        returns (GetPopulationTableResponse);
+
+    rpc RequestReportExport (RequestReportExportRequest)
+        returns (RequestReportExportResponse);
+
+    rpc GetReportResult (GetReportResultRequest)
+        returns (GetReportResultResponse);
+}

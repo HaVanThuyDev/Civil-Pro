@@ -5,10 +5,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
-import vn.civilpro.congdan.entity.Citizen;
-import vn.civilpro.congdan.entity.CitizenChangeLog;
-import vn.civilpro.congdan.entity.FamilyRelationship;
-
+import org.springframework.transaction.event.TransactionPhase;
+import org.springframework.transaction.event.TransactionalEventListener;
+import vn.civilpro.congdan.model.entity.Citizen;
+import vn.civilpro.congdan.model.entity.CitizenChangeLog;
+import vn.civilpro.congdan.model.entity.FamilyRelationship;
 import java.time.Instant;
 
 @Slf4j
@@ -33,16 +34,22 @@ public class CitizenEventPublisher {
     @Value("${civil-pro.kafka.topics.relationship-created:citizen.relationship-created}")
     private String topicRelationshipCreated;
 
-    public void publishCitizenCreated(Citizen citizen) {
-        sendEvent(topicCreated, citizen.getCitizenCode(), buildCitizenEvent("CITIZEN_CREATED", citizen, citizen.getStatus()));
+    @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
+    public void onCitizenCreated(CitizenCreatedEvent event) {
+        Citizen c = event.citizen();
+        sendEvent(topicCreated, c.getCitizenCode(), buildCitizenEvent("CITIZEN_CREATED", c, c.getStatus()));
     }
 
-    public void publishCitizenUpdated(Citizen citizen) {
-        sendEvent(topicUpdated, citizen.getCitizenCode(), buildCitizenEvent("CITIZEN_UPDATED", citizen, citizen.getStatus()));
+    @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
+    public void onCitizenUpdated(CitizenUpdatedEvent event) {
+        Citizen c = event.citizen();
+        sendEvent(topicUpdated, c.getCitizenCode(), buildCitizenEvent("CITIZEN_UPDATED", c, c.getStatus()));
     }
 
-    public void publishCitizenDeceased(Citizen citizen) {
-        sendEvent(topicDeceased, citizen.getCitizenCode(), buildCitizenEvent("CITIZEN_DECEASED", citizen, 0));
+    @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
+    public void onCitizenDeceased(CitizenDeceasedEvent event) {
+        Citizen c = event.citizen();
+        sendEvent(topicDeceased, c.getCitizenCode(), buildCitizenEvent("CITIZEN_DECEASED", c, 0));
     }
 
     public void publishChangeLogCreated(CitizenChangeLog changeLog) {

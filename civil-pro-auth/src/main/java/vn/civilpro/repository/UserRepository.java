@@ -13,5 +13,6 @@ public interface UserRepository extends BaseRepository<User, Long> {
     Optional<User> findByEmail(String email);
     boolean existsByUsername(String username);
     boolean existsByEmail(String email);
-    <T> Page<T> findBy(Specification<User> spec, org.springframework.data.repository.query.FluentQuery.FetchableFluentQuery<T> query);
+
+    <T> Page<T> findBy(Specification<User> spec, Pageable pageable, org.springframework.data.repository.query.FluentQuery.FetchableFluentQuery<T> query);
 }

@@ -1,4 +1,4 @@
-package vn.civilpro.congdan.dto.request;
+package vn.civilpro.congdan.model.dto.request;
 
 import lombok.Data;
 

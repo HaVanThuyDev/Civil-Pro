@@ -1,0 +1,132 @@
+syntax = "proto3";
+
+// ================================================================
+// CIVIL-PRO — NATIONAL POPULATION DATABASE SYNCHRONIZATION PROTO
+//
+// Caller  : Gateway (Admin Panel), StatisticalService
+// Provider: civil-pro-synchronized (gRPC port 9088)
+// ================================================================
+
+package civilpro.sync;
+
+option java_multiple_files  = true;
+option java_package         = "vn.civil.grpc.sync";
+option java_outer_classname = "SyncProto";
+
+import "common.proto";
+
+// ================================================================
+// DATA MESSAGES
+// ================================================================
+
+message SyncSessionInfo {
+    int64  id                    = 1;
+    string session_code          = 2;  // e.g. SYNC-A1B2C3D4
+    string sync_type             = 3;  // FULL, INCREMENTAL, RESTORE
+    string start_time            = 4;  // ISO datetime
+    string end_time              = 5;  // ISO datetime (empty if running)
+    string status                = 6;  // RUNNING, COMPLETED, FAILED, RETRY
+    int32  total_records         = 7;
+    int32  processed_records     = 8;
+    int32  success_records       = 9;
+    int32  failed_records        = 10;
+    double completion_percentage = 11; // 0.0 - 100.0 (Dashboard shows e.g. 80%)
+    string error_code            = 12;
+    string error_message         = 13;
+    int32  retry_count           = 14;
+}
+
+message SyncErrorRecordInfo {
+    int64  id           = 1;
+    int64  session_id   = 2;
+    string national_id  = 3;
+    string error_reason = 4;
+    string error_code   = 5;
+    bool   processed    = 6;
+    string created_at   = 7;
+}
+
+// ================================================================
+// REQUEST MESSAGES
+// ================================================================
+
+message TriggerSyncRequest {
+    string sync_type     = 1;  // FULL, INCREMENTAL
+    string triggered_by  = 2;
+}
+
+message GetSessionByCodeRequest {
+    string session_code = 1;
+}
+
+message GetSessionHistoryRequest {
+    civilpro.common.PageRequest page = 1;
+}
+
+message GetErrorRecordsRequest {
+    int64  session_id                = 1;
+    bool   unprocessed_only          = 2;
+    civilpro.common.PageRequest page = 3;
+}
+
+message ProcessErrorRecordRequest {
+    int64  record_id    = 1;
+    string processed_by = 2;
+    string note         = 3;
+}
+
+// ================================================================
+// RESPONSE MESSAGES
+// ================================================================
+
+message TriggerSyncResponse {
+    civilpro.common.GrpcResponse meta         = 1;
+    string                       session_code = 2;
+}
+
+message GetSessionResponse {
+    civilpro.common.GrpcResponse meta = 1;
+    SyncSessionInfo              data = 2;
+}
+
+message GetSessionHistoryResponse {
+    civilpro.common.GrpcResponse meta = 1;
+    repeated SyncSessionInfo     data = 2;
+    civilpro.common.PageInfo     page = 3;
+}
+
+message GetErrorRecordsResponse {
+    civilpro.common.GrpcResponse meta = 1;
+    repeated SyncErrorRecordInfo data = 2;
+    civilpro.common.PageInfo     page = 3;
+}
+
+message ProcessErrorRecordResponse {
+    civilpro.common.GrpcResponse meta    = 1;
+    bool                         success = 2;
+}
+
+// ================================================================
+// SERVICE DEFINITION
+// ================================================================
+
+service SyncGrpcService {
+
+    rpc TriggerSync (TriggerSyncRequest)
+        returns (TriggerSyncResponse);
+
+    rpc GetLatestSession (civilpro.common.EmptyRequest)
+        returns (GetSessionResponse);
+
+    rpc GetSessionByCode (GetSessionByCodeRequest)
+        returns (GetSessionResponse);
+
+    rpc GetSessionHistory (GetSessionHistoryRequest)
+        returns (GetSessionHistoryResponse);
+
+    rpc GetErrorRecords (GetErrorRecordsRequest)
+        returns (GetErrorRecordsResponse);
+
+    rpc ProcessErrorRecord (ProcessErrorRecordRequest)
+        returns (ProcessErrorRecordResponse);
+}

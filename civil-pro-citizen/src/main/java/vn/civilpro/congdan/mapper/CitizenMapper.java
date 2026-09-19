@@ -2,11 +2,11 @@ package vn.civilpro.congdan.mapper;
 
 
 import org.mapstruct.*;
-import vn.civilpro.congdan.dto.request.CreateCitizenRequest;
-import vn.civilpro.congdan.dto.request.UpdateCitizenRequest;
-import vn.civilpro.congdan.dto.response.CitizenDetailResponse;
-import vn.civilpro.congdan.dto.response.CitizenSummaryResponse;
-import vn.civilpro.congdan.entity.Citizen;
+import vn.civilpro.congdan.model.dto.request.CreateCitizenRequest;
+import vn.civilpro.congdan.model.dto.request.UpdateCitizenRequest;
+import vn.civilpro.congdan.model.dto.response.CitizenDetailResponse;
+import vn.civilpro.congdan.model.dto.response.CitizenSummaryResponse;
+import vn.civilpro.congdan.model.entity.Citizen;
 
 import java.time.LocalDate;
 import java.time.Period;
@@ -27,17 +27,22 @@ public interface CitizenMapper {
     Citizen toEntity(CreateCitizenRequest request);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "citizenCode", ignore = true)
+    @Mapping(target = "createdAt", ignore = true)
+    @Mapping(target = "createdBy", ignore = true)
+    @Mapping(target = "version", ignore = true) // để Hibernate tự quản lý optimistic lock
     void updateEntityFromRequest(UpdateCitizenRequest request, @MappingTarget Citizen entity);
 
     @Mapping(target = "genderLabel", expression = "java(mapGender(citizen.getGender()))")
-    @Mapping(target = "age", expression = "java(calculateAge(citizen.getDateOfBirth()))")
+    @Mapping(target = "age", expression = "java(calculateAge(citizen.getDateOfBirth(), citizen.getDeathDate()))")
     @Mapping(target = "statusLabel", expression = "java(mapStatus(citizen.getStatus()))")
     @Mapping(target = "idCardExpiringSoon", expression = "java(isIdCardExpiringSoon(citizen.getIdCardExpiryDate()))")
     @Mapping(target = "isHouseholdHead", expression = "java(citizen.getIsHouseholdHead() != null && citizen.getIsHouseholdHead() == 1)")
     CitizenDetailResponse toDetailResponse(Citizen citizen);
 
     @Mapping(target = "genderLabel", expression = "java(mapGender(citizen.getGender()))")
-    @Mapping(target = "age", expression = "java(calculateAge(citizen.getDateOfBirth()))")
+    @Mapping(target = "age", expression = "java(calculateAge(citizen.getDateOfBirth(), citizen.getDeathDate()))")
     @Mapping(target = "statusLabel", expression = "java(mapStatus(citizen.getStatus()))")
     CitizenSummaryResponse toSummaryResponse(Citizen citizen);
 
@@ -50,9 +55,10 @@ public interface CitizenMapper {
         };
     }
 
-    default Integer calculateAge(LocalDate dateOfBirth) {
+    default Integer calculateAge(LocalDate dateOfBirth, LocalDate deathDate) {
         if (dateOfBirth == null) return null;
-        return Period.between(dateOfBirth, LocalDate.now()).getYears();
+        LocalDate endDate = deathDate != null ? deathDate : LocalDate.now();
+        return Period.between(dateOfBirth, endDate).getYears();
     }
 
     default String mapStatus(Integer status) {

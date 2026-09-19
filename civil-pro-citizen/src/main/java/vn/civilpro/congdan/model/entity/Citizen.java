@@ -1,4 +1,4 @@
-package vn.civilpro.congdan.entity;
+package vn.civilpro.congdan.model.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(
-        name = "CITIZEN",
+        name = "DM_CITIZEN",
         indexes = {
                 @Index(name = "IDX_FULL_NAME", columnList = "FULL_NAME"),
                 @Index(name = "IDX_FULL_NAME_ASCII", columnList = "FULL_NAME_ASCII"),
@@ -29,7 +29,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Citizen {
+public class Citizen extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -46,7 +46,7 @@ public class Citizen {
     private String fullNameAscii;
 
     @Column(name = "GENDER", nullable = false)
-    private Integer gender; // 1=Male, 2=Female (or matches your system convention)
+    private Integer gender;
 
     @Column(name = "DATE_OF_BIRTH", nullable = false)
     private LocalDate dateOfBirth;
@@ -65,7 +65,8 @@ public class Citizen {
     private String nationality = "VIỆT NAM";
 
     // ---- Identification Documents ----
-    @Column(name = "ID_CARD_NUMBER", unique = true, length = 12)
+    @Convert(converter = vn.civilpro.congdan.security.Aes256EncryptConverter.class)
+    @Column(name = "ID_CARD_NUMBER", unique = true, length = 100)
     private String idCardNumber;
 
     @Column(name = "ID_CARD_ISSUED_DATE")
@@ -84,7 +85,8 @@ public class Citizen {
     private LocalDate passportExpiryDate;
 
     // ---- Contact Details ----
-    @Column(name = "PHONE_NUMBER", length = 15)
+    @Convert(converter = vn.civilpro.congdan.security.Aes256EncryptConverter.class)
+    @Column(name = "PHONE_NUMBER", length = 100)
     private String phoneNumber;
 
     @Column(name = "EMAIL", length = 255)
@@ -135,24 +137,6 @@ public class Citizen {
     @Column(name = "STATUS_REASON", length = 500)
     private String statusReason;
 
-    // ---- JPA Auditing ----
-    @CreatedDate
-    @Column(name = "CREATED_AT", nullable = false, updatable = false)
-    private LocalDateTime createdAt;
-
-    @LastModifiedDate
-    @Column(name = "UPDATED_AT", nullable = false)
-    private LocalDateTime updatedAt;
-
-    @CreatedBy
-    @Column(name = "CREATED_BY", length = 50, updatable = false)
-    private String createdBy;
-
-    @LastModifiedBy
-    @Column(name = "UPDATED_BY", length = 50)
-    private String updatedBy;
-
-    // ---- Optimistic Locking ----
     @Version
     @Column(name = "VERSION", nullable = false)
     @Builder.Default

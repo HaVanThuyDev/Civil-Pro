@@ -1,0 +1,111 @@
+syntax = "proto3";
+
+// ================================================================
+// CIVIL-PRO — HOUSEHOLD SERVICE PROTO
+//
+// Caller  : StatisticalService, SynchronizationService
+// Provider: civil-pro-household (gRPC port 9083)
+// ================================================================
+
+package civilpro.household;
+
+option java_multiple_files  = true;
+option java_package         = "vn.civil.grpc.household";
+option java_outer_classname = "HouseholdProto";
+
+import "common.proto";
+
+// ================================================================
+// DATA MESSAGES
+// ================================================================
+
+message HouseholdInfo {
+    int64  id                    = 1;
+    string household_code        = 2;
+    string household_book_number = 3;
+    int64  head_citizen_id       = 4;
+    string head_full_name        = 5;
+    string area_code             = 6;
+    string full_address          = 7;
+    int32  member_count          = 8;
+    string household_type        = 9;  // POOR, NEAR_POOR, NORMAL
+    string registration_date     = 10; // ISO: yyyy-MM-dd
+    string status                = 11; // ACTIVE, SPLIT, MERGED
+}
+
+message HouseholdMemberInfo {
+    int64  id                     = 1;
+    int64  citizen_id             = 2;
+    string full_name              = 3;
+    string relationship_with_head = 4; // HEAD, SPOUSE, CHILD, PARENT, SIBLING, OTHER
+    string join_date              = 5; // ISO: yyyy-MM-dd
+    string leave_date             = 6; // ISO: yyyy-MM-dd (empty if currently active)
+    int32  status                 = 7; // 1=Active, 0=Separated
+}
+
+// ================================================================
+// REQUEST MESSAGES
+// ================================================================
+
+message GetHouseholdByIdRequest {
+    int64 id = 1;
+}
+
+message GetHouseholdByCodeRequest {
+    string household_code = 1;
+}
+
+message GetHouseholdByCitizenIdRequest {
+    int64 citizen_id = 1;
+}
+
+message GetHouseholdMembersRequest {
+    int64 household_id = 1;
+    bool  active_only  = 2;
+}
+
+message CountHouseholdsByAreaRequest {
+    string area_code = 1;
+}
+
+// ================================================================
+// RESPONSE MESSAGES
+// ================================================================
+
+message GetHouseholdResponse {
+    civilpro.common.GrpcResponse meta = 1;
+    HouseholdInfo                data = 2;
+}
+
+message GetHouseholdMembersResponse {
+    civilpro.common.GrpcResponse meta  = 1;
+    repeated HouseholdMemberInfo data  = 2;
+    int32                        total = 3;
+}
+
+message CountHouseholdsResponse {
+    civilpro.common.GrpcResponse meta  = 1;
+    int64                        count = 2;
+}
+
+// ================================================================
+// SERVICE DEFINITION
+// ================================================================
+
+service HouseholdGrpcService {
+
+    rpc GetById (GetHouseholdByIdRequest)
+        returns (GetHouseholdResponse);
+
+    rpc GetByCode (GetHouseholdByCodeRequest)
+        returns (GetHouseholdResponse);
+
+    rpc GetHouseholdByCitizenId (GetHouseholdByCitizenIdRequest)
+        returns (GetHouseholdResponse);
+
+    rpc GetMembers (GetHouseholdMembersRequest)
+        returns (GetHouseholdMembersResponse);
+
+    rpc CountHouseholdsByArea (CountHouseholdsByAreaRequest)
+        returns (CountHouseholdsResponse);
+}

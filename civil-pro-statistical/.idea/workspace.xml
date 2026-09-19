@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="12b411bb-b330-4847-8271-742ebaf7e8f7" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/../civil-pro-auth/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../civil-pro-auth/.idea/compiler.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../civil-pro-auth/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../civil-pro-auth/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../civil-pro-auth/src/main/java/vn/civilpro/controller/UserController.java" beforeDir="false" afterPath="$PROJECT_DIR$/../civil-pro-auth/src/main/java/vn/civilpro/controller/UserController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../civil-pro-auth/src/main/java/vn/civilpro/grpc/AuthGrpcService.java" beforeDir="false" afterPath="$PROJECT_DIR$/../civil-pro-auth/src/main/java/vn/civilpro/grpc/AuthGrpcService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../civil-pro-auth/src/main/java/vn/civilpro/grpc/mapper/ProtoMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/../civil-pro-auth/src/main/java/vn/civilpro/grpc/mapper/ProtoMapper.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../civil-pro-auth/src/main/java/vn/civilpro/model/dto/UserDto.java" beforeDir="false" afterPath="$PROJECT_DIR$/../civil-pro-auth/src/main/java/vn/civilpro/model/dto/UserDto.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../civil-pro-auth/src/main/java/vn/civilpro/repository/UserRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/../civil-pro-auth/src/main/java/vn/civilpro/repository/UserRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../civil-pro-auth/src/main/java/vn/civilpro/security/JwtService.java" beforeDir="false" afterPath="$PROJECT_DIR$/../civil-pro-auth/src/main/java/vn/civilpro/security/JwtService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../civil-pro-auth/src/main/java/vn/civilpro/service/impl/AuthServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/../civil-pro-auth/src/main/java/vn/civilpro/service/impl/AuthServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../civil-pro-auth/target/civil-pro-auth-1.0.0.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../civil-pro-auth/target/civil-pro-auth-1.0.0.jar.original" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../civil-pro-auth/target/classes/vn/civilpro/common/abc.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../civil-pro-auth/target/classes/vn/civilpro/common/response/ApiResponse.class" beforeDir="false" afterPath="$PROJECT_DIR$/../civil-pro-auth/target/classes/vn/civilpro/common/response/ApiResponse.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../civil-pro-auth/target/classes/vn/civilpro/controller/AuthController.class" beforeDir="false" afterPath="$PROJECT_DIR$/../civil-pro-auth/target/classes/vn/civilpro/controller/AuthController.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../civil-pro-auth/target/classes/vn/civilpro/grpc/AuthGrpcService.class" beforeDir="false" afterPath="$PROJECT_DIR$/../civil-pro-auth/target/classes/vn/civilpro/grpc/AuthGrpcService.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../civil-pro-auth/target/classes/vn/civilpro/grpc/mapper/ProtoMapper.class" beforeDir="false" afterPath="$PROJECT_DIR$/../civil-pro-auth/target/classes/vn/civilpro/grpc/mapper/ProtoMapper.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../civil-pro-auth/target/classes/vn/civilpro/model/dto/UserDto$UserDtoBuilder.class" beforeDir="false" afterPath="$PROJECT_DIR$/../civil-pro-auth/target/classes/vn/civilpro/model/dto/UserDto$UserDtoBuilder.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../civil-pro-auth/target/classes/vn/civilpro/model/dto/UserDto.class" beforeDir="false" afterPath="$PROJECT_DIR$/../civil-pro-auth/target/classes/vn/civilpro/model/dto/UserDto.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../civil-pro-auth/target/classes/vn/civilpro/model/entity/Role$RoleBuilder.class" beforeDir="false" afterPath="$PROJECT_DIR$/../civil-pro-auth/target/classes/vn/civilpro/model/entity/Role$RoleBuilder.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../civil-pro-auth/target/classes/vn/civilpro/model/entity/Role.class" beforeDir="false" afterPath="$PROJECT_DIR$/../civil-pro-auth/target/classes/vn/civilpro/model/entity/Role.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../civil-pro-auth/target/classes/vn/civilpro/repository/UserRepository.class" beforeDir="false" afterPath="$PROJECT_DIR$/../civil-pro-auth/target/classes/vn/civilpro/repository/UserRepository.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../civil-pro-auth/target/classes/vn/civilpro/security/JwtService.class" beforeDir="false" afterPath="$PROJECT_DIR$/../civil-pro-auth/target/classes/vn/civilpro/security/JwtService.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../civil-pro-auth/target/classes/vn/civilpro/service/impl/AuthServiceImpl.class" beforeDir="false" afterPath="$PROJECT_DIR$/../civil-pro-auth/target/classes/vn/civilpro/service/impl/AuthServiceImpl.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../civil-pro-auth/target/maven-archiver/pom.properties" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../civil-pro-auth/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst" beforeDir="false" afterPath="$PROJECT_DIR$/../civil-pro-auth/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../civil-pro-auth/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst" beforeDir="false" afterPath="$PROJECT_DIR$/../civil-pro-auth/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../civil-pro-auth/target/maven-status/maven-compiler-plugin/testCompile/default-testCompile/createdFiles.lst" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../civil-pro-auth/target/maven-status/maven-compiler-plugin/testCompile/default-testCompile/inputFiles.lst" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../civil-pro-citizen/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../civil-pro-citizen/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../civil-pro-citizen/src/main/java/vn/civilpro/congdan/CitizenApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/../civil-pro-citizen/src/main/java/vn/civilpro/congdan/CitizenApplication.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../civil-pro-citizen/src/main/java/vn/civilpro/congdan/common/ApiResponse.java" beforeDir="false" afterPath="$PROJECT_DIR$/../civil-pro-citizen/src/main/java/vn/civilpro/congdan/common/ApiResponse.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../civil-pro-citizen/src/main/java/vn/civilpro/congdan/config/KafkaConsumerConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/../civil-pro-citizen/src/main/java/vn/civilpro/congdan/config/KafkaConsumerConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../civil-pro-citizen/src/main/java/vn/civilpro/congdan/config/RedisConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/../civil-pro-citizen/src/main/java/vn/civilpro/congdan/config/RedisConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../civil-pro-citizen/src/main/java/vn/civilpro/congdan/controller/CitizenController.java" beforeDir="false" afterPath="$PROJECT_DIR$/../civil-pro-citizen/src/main/java/vn/civilpro/congdan/controller/CitizenController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../civil-pro-citizen/src/main/java/vn/civilpro/congdan/event/CitizenCreatedEvent.java" beforeDir="false" afterPath="$PROJECT_DIR$/../civil-pro-citizen/src/main/java/vn/civilpro/congdan/event/CitizenCreatedEvent.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../civil-pro-citizen/src/main/java/vn/civilpro/congdan/event/CitizenDeceasedEvent.java" beforeDir="false" afterPath="$PROJECT_DIR$/../civil-pro-citizen/src/main/java/vn/civilpro/congdan/event/CitizenDeceasedEvent.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../civil-pro-citizen/src/main/java/vn/civilpro/congdan/event/CitizenEventPublisher.java" beforeDir="false" afterPath="$PROJECT_DIR$/../civil-pro-citizen/src/main/java/vn/civilpro/congdan/event/CitizenEventPublisher.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../civil-pro-citizen/src/main/java/vn/civilpro/congdan/event/CitizenUpdatedEvent.java" beforeDir="false" afterPath="$PROJECT_DIR$/../civil-pro-citizen/src/main/java/vn/civilpro/congdan/event/CitizenUpdatedEvent.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../civil-pro-citizen/src/main/java/vn/civilpro/congdan/exception/BaseException.java" beforeDir="false" afterPath="$PROJECT_DIR$/../civil-pro-citizen/src/main/java/vn/civilpro/congdan/exception/BaseException.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../civil-pro-citizen/src/main/java/vn/civilpro/congdan/exception/DuplicateResourceException.java" beforeDir="false" afterPath="$PROJECT_DIR$/../civil-pro-citizen/src/main/java/vn/civilpro/congdan/exception/DuplicateResourceException.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../civil-pro-citizen/src/main/java/vn/civilpro/congdan/exception/ResourceNotFoundException.java" beforeDir="false" afterPath="$PROJECT_DIR$/../civil-pro-citizen/src/main/java/vn/civilpro/congdan/exception/ResourceNotFoundException.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../civil-pro-citizen/src/main/java/vn/civilpro/congdan/grpc/CitizenGrpcServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/../civil-pro-citizen/src/main/java/vn/civilpro/congdan/grpc/CitizenGrpcServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../civil-pro-citizen/src/main/java/vn/civilpro/congdan/mapper/CitizenMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/../civil-pro-citizen/src/main/java/vn/civilpro/congdan/mapper/CitizenMapper.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../civil-pro-citizen/src/main/java/vn/civilpro/congdan/model/dto/CitizenDto.java" beforeDir="false" afterPath="$PROJECT_DIR$/../civil-pro-citizen/src/main/java/vn/civilpro/congdan/model/dto/CitizenDto.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../civil-pro-citizen/src/main/java/vn/civilpro/congdan/model/dto/request/CreateCitizenRequest.java" beforeDir="false" afterPath="$PROJECT_DIR$/../civil-pro-citizen/src/main/java/vn/civilpro/congdan/model/dto/request/CreateCitizenRequest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../civil-pro-citizen/src/main/java/vn/civilpro/congdan/model/dto/request/DeathRegistrationRequest.java" beforeDir="false" afterPath="$PROJECT_DIR$/../civil-pro-citizen/src/main/java/vn/civilpro/congdan/model/dto/request/DeathRegistrationRequest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../civil-pro-citizen/src/main/java/vn/civilpro/congdan/model/dto/request/SearchCitizenRequest.java" beforeDir="false" afterPath="$PROJECT_DIR$/../civil-pro-citizen/src/main/java/vn/civilpro/congdan/model/dto/request/SearchCitizenRequest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../civil-pro-citizen/src/main/java/vn/civilpro/congdan/model/dto/request/UpdateCitizenRequest.java" beforeDir="false" afterPath="$PROJECT_DIR$/../civil-pro-citizen/src/main/java/vn/civilpro/congdan/model/dto/request/UpdateCitizenRequest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../civil-pro-citizen/src/main/java/vn/civilpro/congdan/model/dto/response/CitizenDetailResponse.java" beforeDir="false" afterPath="$PROJECT_DIR$/../civil-pro-citizen/src/main/java/vn/civilpro/congdan/model/dto/response/CitizenDetailResponse.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../civil-pro-citizen/src/main/java/vn/civilpro/congdan/model/dto/response/CitizenSummaryResponse.java" beforeDir="false" afterPath="$PROJECT_DIR$/../civil-pro-citizen/src/main/java/vn/civilpro/congdan/model/dto/response/CitizenSummaryResponse.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../civil-pro-citizen/src/main/java/vn/civilpro/congdan/model/dto/response/PagedResult.java" beforeDir="false" afterPath="$PROJECT_DIR$/../civil-pro-citizen/src/main/java/vn/civilpro/congdan/model/dto/response/PagedResult.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../civil-pro-citizen/src/main/java/vn/civilpro/congdan/model/entity/BaseEntity.java" beforeDir="false" afterPath="$PROJECT_DIR$/../civil-pro-citizen/src/main/java/vn/civilpro/congdan/model/entity/BaseEntity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../civil-pro-citizen/src/main/java/vn/civilpro/congdan/model/entity/Citizen.java" beforeDir="false" afterPath="$PROJECT_DIR$/../civil-pro-citizen/src/main/java/vn/civilpro/congdan/model/entity/Citizen.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../civil-pro-citizen/src/main/java/vn/civilpro/congdan/model/entity/CitizenChangeLog.java" beforeDir="false" afterPath="$PROJECT_DIR$/../civil-pro-citizen/src/main/java/vn/civilpro/congdan/model/entity/CitizenChangeLog.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../civil-pro-citizen/src/main/java/vn/civilpro/congdan/model/entity/FamilyRelationship.java" beforeDir="false" afterPath="$PROJECT_DIR$/../civil-pro-citizen/src/main/java/vn/civilpro/congdan/model/entity/FamilyRelationship.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../civil-pro-citizen/src/main/java/vn/civilpro/congdan/model/enums/ErrorCode.java" beforeDir="false" afterPath="$PROJECT_DIR$/../civil-pro-citizen/src/main/java/vn/civilpro/congdan/model/enums/ErrorCode.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../civil-pro-citizen/src/main/java/vn/civilpro/congdan/model/ádas.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../civil-pro-citizen/src/main/java/vn/civilpro/congdan/repository/CitizenRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/../civil-pro-citizen/src/main/java/vn/civilpro/congdan/repository/CitizenRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../civil-pro-citizen/src/main/java/vn/civilpro/congdan/security/JwtAuthenticationFilter.java" beforeDir="false" afterPath="$PROJECT_DIR$/../civil-pro-citizen/src/main/java/vn/civilpro/congdan/security/JwtAuthenticationFilter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../civil-pro-citizen/src/main/java/vn/civilpro/congdan/service/CitizenService.java" beforeDir="false" afterPath="$PROJECT_DIR$/../civil-pro-citizen/src/main/java/vn/civilpro/congdan/service/CitizenService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../civil-pro-citizen/src/main/java/vn/civilpro/congdan/service/impl/CitizenServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/../civil-pro-citizen/src/main/java/vn/civilpro/congdan/service/impl/CitizenServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../civil-pro-citizen/src/main/java/vn/civilpro/congdan/util/CitizenCodeGenerator.java" beforeDir="false" afterPath="$PROJECT_DIR$/../civil-pro-citizen/src/main/java/vn/civilpro/congdan/util/CitizenCodeGenerator.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../civil-pro-citizen/src/main/java/vn/civilpro/congdan/util/VietnameseUtils.java" beforeDir="false" afterPath="$PROJECT_DIR$/../civil-pro-citizen/src/main/java/vn/civilpro/congdan/util/VietnameseUtils.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../civil-pro-citizen/src/main/proto/citizen.proto" beforeDir="false" afterPath="$PROJECT_DIR$/../civil-pro-citizen/src/main/proto/citizen.proto" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../civil-pro-citizen/src/main/proto/common.proto" beforeDir="false" afterPath="$PROJECT_DIR$/../civil-pro-citizen/src/main/proto/common.proto" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../civil-pro-citizen/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/../civil-pro-citizen/src/main/resources/application.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../civil-pro-citizen/src/test/java/vn/civilpro/congdan/controller/CongDanControllerTest.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../civil-pro-citizen/src/test/java/vn/civilpro/congdan/service/CitizenServiceImplTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/../civil-pro-citizen/src/test/java/vn/civilpro/congdan/service/CitizenServiceImplTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../civil-pro-citizen/src/test/java/vn/civilpro/congdan/util/VietNameseUtilsTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/../civil-pro-citizen/src/test/java/vn/civilpro/congdan/util/VietNameseUtilsTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../civil-pro-citizen/target/classes/application.yml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../civil-pro-citizen/target/generated-sources/annotations/vn/civilpro/congdan/mapper/CongDanMapperImpl.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../civil-pro-citizen/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst" beforeDir="false" afterPath="$PROJECT_DIR$/../civil-pro-citizen/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../civil-pro-citizen/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst" beforeDir="false" afterPath="$PROJECT_DIR$/../civil-pro-citizen/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../civil-pro-fluctuations/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../civil-pro-fluctuations/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../civil-pro-fluctuations/src/main/java/proto/bien_dong.proto" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../civil-pro-fluctuations/src/main/java/proto/erd_chen_notation.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../civil-pro-fluctuations/src/main/java/vn/civilpro/biendong/entity/BienDongDanCu.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../civil-pro-fluctuations/src/main/java/vn/civilpro/biendong/event/BienDongKafkaConsumer.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../civil-pro-fluctuations/src/main/java/vn/civilpro/biendong/event/CongDanKafkaEvent.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../civil-pro-gateway/src/main/java/vn/civilpro/gateway/config/KeyResolverConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/../civil-pro-gateway/src/main/java/vn/civilpro/gateway/config/KeyResolverConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../civil-pro-gateway/src/main/java/vn/civilpro/gateway/filter/JwtAuthenticationFilter.java" beforeDir="false" afterPath="$PROJECT_DIR$/../civil-pro-gateway/src/main/java/vn/civilpro/gateway/filter/JwtAuthenticationFilter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../civil-pro-gateway/target/civil-pro-gateway-1.0.0.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../civil-pro-gateway/target/civil-pro-gateway-1.0.0.jar.original" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../civil-pro-gateway/target/classes/vn/civilpro/gateway/config/GatewaySecurityConfig.class" beforeDir="false" afterPath="$PROJECT_DIR$/../civil-pro-gateway/target/classes/vn/civilpro/gateway/config/GatewaySecurityConfig.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../civil-pro-gateway/target/classes/vn/civilpro/gateway/config/KeyResolverConfig.class" beforeDir="false" afterPath="$PROJECT_DIR$/../civil-pro-gateway/target/classes/vn/civilpro/gateway/config/KeyResolverConfig.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../civil-pro-gateway/target/classes/vn/civilpro/gateway/filter/JwtAuthenticationFilter$Config.class" beforeDir="false" afterPath="$PROJECT_DIR$/../civil-pro-gateway/target/classes/vn/civilpro/gateway/filter/JwtAuthenticationFilter$Config.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../civil-pro-gateway/target/classes/vn/civilpro/gateway/filter/JwtAuthenticationFilter.class" beforeDir="false" afterPath="$PROJECT_DIR$/../civil-pro-gateway/target/classes/vn/civilpro/gateway/filter/JwtAuthenticationFilter.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../civil-pro-gateway/target/maven-archiver/pom.properties" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../civil-pro-gateway/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst" beforeDir="false" afterPath="$PROJECT_DIR$/../civil-pro-gateway/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../civil-pro-gateway/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst" beforeDir="false" afterPath="$PROJECT_DIR$/../civil-pro-gateway/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../civil-pro-household/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../civil-pro-household/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../civil-pro-household/src/main/java/proto/ho_khau.proto" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../civil-pro-household/src/main/java/vn/civilpro/hokhau/entity/HoKhau.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../civil-pro-household/src/main/java/vn/civilpro/hokhau/entity/ThanhVienHoKhau.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../civil-pro-household/src/main/java/vn/civilpro/hokhau/repository/HoKhauRepository.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../civil-pro-household/src/main/java/vn/civilpro/hokhau/repository/ThanhVienHoKhauRepository.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../civil-pro-household/src/main/java/vn/civilpro/hokhau/service/impl/HoKhauServiceImpl.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../civil-pro-household/src/main/java/vn/civilpro/hokhau/service/qqw.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../civil-pro-household/src/main/resources/ application.yml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/proto/thong_ke.proto" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/vn/civilpro/thongke/entity/ThongKeDanSo.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../civil-pro-synchronized/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../civil-pro-synchronized/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../civil-pro-synchronized/src/main/java/proto/dong_bo.proto" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../civil-pro-synchronized/src/main/java/vn/civilpro/dongbo/entity/PhienDongBo.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../civil-pro-synchronized/src/main/java/vn/civilpro/dongbo/service/DongBoServiceImpl.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../config-server/src/main/resources/config/gateway.yml" beforeDir="false" afterPath="$PROJECT_DIR$/../config-server/src/main/resources/config/gateway.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../config-server/target/classes/config/gateway.yml" beforeDir="false" afterPath="$PROJECT_DIR$/../config-server/target/classes/config/gateway.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../pom.xml" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
+  </component>
+  <component name="ProjectColorInfo"><![CDATA[{
+  "associatedIndex": 3
+}]]></component>
+  <component name="ProjectId" id="3JYz9aWzTyx3MEpJIXFR57cY1JY" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "git-widget-placeholder": "main",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "D:/SPRINGBOOT/civil-pro/civil-pro-statistical",
+    "project.structure.last.edited": "Project",
+    "project.structure.proportion": "0.15",
+    "project.structure.side.proportion": "0.0"
+  }
+}]]></component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-jdk-30f59d01ecdd-26cb7f24e5b0-intellij.indexing.shared.core-IU-253.29346.240" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="12b411bb-b330-4847-8271-742ebaf7e8f7" name="Changes" comment="" />
+      <created>1789852641303</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1789852641303</updated>
+    </task>
+    <servers />
+  </component>
+</project>

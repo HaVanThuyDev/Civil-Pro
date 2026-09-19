@@ -23,7 +23,7 @@ class VietNameseUtilsTest {
     })
     @DisplayName("Bỏ dấu tiếng Việt đúng")
     void removeAccent_correctlyRemovesDiacritics(String input, String expected) {
-        assertThat(VietNameseUtils.removeAccent(input.trim()))
+        assertThat(VietnameseUtils.removeAccent(input.trim()))
                 .isEqualToIgnoringWhitespace(expected.trim());
     }
 }

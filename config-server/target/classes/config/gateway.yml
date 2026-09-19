@@ -34,7 +34,7 @@ spring:
         - id: auth-service
           uri: lb://CIVIL-PRO-AUTH
           predicates:
-            - Path=/civil/auth/**, /civil/users/**
+            - Path=/civil/auth/**, /civil/auth, /civil/users/**, /civil/users
           filters:
             - RewritePath=/civil/(?<segment>.*), /${segment}
             - name: RequestRateLimiter
@@ -44,11 +44,12 @@ spring:
                 key-resolver: "#{@authKeyResolver}"
 
         - id: citizen-service
-          uri: lb://CITIZEN-SERVICE
+          uri: lb://CIVIL-PRO-CITIZEN
           predicates:
-            - Path=/civil/citizen/**
+            - Path=/civil/citizen/**, /civil/citizen
           filters:
-            - RewritePath=/civil/citizen/(?<segment>.*), /${segment}
+            - RewritePath=/civil/citizen(?<segment>.*), /api/citizen${segment}
+            - name: JwtAuthenticationFilter
             - name: RequestRateLimiter
               args:
                 redis-rate-limiter.replenishRate: 10
@@ -58,9 +59,10 @@ spring:
         - id: household-service
           uri: lb://HOUSEHOLD-SERVICE
           predicates:
-            - Path=/civil/household/**
+            - Path=/civil/household/**, /civil/household
           filters:
-            - RewritePath=/civil/household/(?<segment>.*), /${segment}
+            - RewritePath=/civil/household(?<segment>.*), /api/household${segment}
+            - name: JwtAuthenticationFilter
             - name: RequestRateLimiter
               args:
                 redis-rate-limiter.replenishRate: 10
@@ -70,9 +72,10 @@ spring:
         - id: fluctuations-service
           uri: lb://FLUCTUATIONS-SERVICE
           predicates:
-            - Path=/civil/fluctuations/**
+            - Path=/civil/fluctuations/**, /civil/fluctuations
           filters:
-            - RewritePath=/civil/fluctuations/(?<segment>.*), /${segment}
+            - RewritePath=/civil/fluctuations(?<segment>.*), /api/fluctuations${segment}
+            - name: JwtAuthenticationFilter
             - name: RequestRateLimiter
               args:
                 redis-rate-limiter.replenishRate: 10
@@ -82,9 +85,10 @@ spring:
         - id: statistical-service
           uri: lb://STATISTICAL-SERVICE
           predicates:
-            - Path=/civil/statistical/**
+            - Path=/civil/statistical/**, /civil/statistical
           filters:
-            - RewritePath=/civil/statistical/(?<segment>.*), /${segment}
+            - RewritePath=/civil/statistical(?<segment>.*), /api/statistical${segment}
+            - name: JwtAuthenticationFilter
             - name: RequestRateLimiter
               args:
                 redis-rate-limiter.replenishRate: 10
@@ -94,9 +98,10 @@ spring:
         - id: synchronized-service
           uri: lb://SYNCHRONIZED-SERVICE
           predicates:
-            - Path=/civil/synchronized/api/**
+            - Path=/civil/synchronized/**, /civil/synchronized
           filters:
-            - RewritePath=/civil/synchronized/(?<segment>.*), /${segment}
+            - RewritePath=/civil/synchronized(?<segment>.*), /api/sync${segment}
+            - name: JwtAuthenticationFilter
             - name: RequestRateLimiter
               args:
                 redis-rate-limiter.replenishRate: 10
@@ -106,9 +111,36 @@ spring:
         - id: vnpay-service
           uri: lb://VNPAY-SERVICE
           predicates:
-            - Path=/civil/vnpay/**
+            - Path=/civil/vnpay/**, /civil/vnpay
           filters:
-            - RewritePath=/civil/vnpay/(?<segment>.*), /${segment}
+            - RewritePath=/civil/(?<segment>.*), /${segment}
+            - name: JwtAuthenticationFilter
+            - name: RequestRateLimiter
+              args:
+                redis-rate-limiter.replenishRate: 10
+                redis-rate-limiter.burstCapacity: 20
+                key-resolver: "#{@authKeyResolver}"
+
+        - id: payment-process-service
+          uri: lb://PAYMENT-SERVICE
+          predicates:
+            - Path=/civil/pay/process
+          filters:
+            - RewritePath=/civil/pay(?<segment>.*), /api/pay${segment}
+            - name: JwtAuthenticationFilter
+            - name: RequestRateLimiter
+              args:
+                redis-rate-limiter.replenishRate: 1
+                redis-rate-limiter.burstCapacity: 2
+                key-resolver: "#{@paymentKeyResolver}"
+
+        - id: payment-service
+          uri: lb://PAYMENT-SERVICE
+          predicates:
+            - Path=/civil/pay/**, /civil/pay
+          filters:
+            - RewritePath=/civil/pay(?<segment>.*), /api/pay${segment}
+            - name: JwtAuthenticationFilter
             - name: RequestRateLimiter
               args:
                 redis-rate-limiter.replenishRate: 10
@@ -138,6 +170,7 @@ eureka:
       defaultZone: http://localhost:8761/eureka/
     fetch-registry: true
     register-with-eureka: true
+    registry-fetch-interval-seconds: 5
   instance:
     prefer-ip-address: true
     hostname: localhost
@@ -151,5 +184,5 @@ civil-pro:
 
 logging:
   level:
-    org.springframework.cloud.gateway: INFO
+    org.springframework.cloud.gateway: TRACE
     reactor.netty: INFO

@@ -28,14 +28,33 @@ public class JwtAuthenticationFilter extends AbstractGatewayFilterFactory<JwtAut
         super(Config.class);
     }
 
+    private static final java.util.List<String> PUBLIC_PATHS = java.util.List.of(
+            "/civil/auth/login",
+            "/civil/auth/register",
+            "/civil/auth/refresh-token",
+            "/actuator"
+    );
+
+    private boolean isWhitelisted(String path) {
+        if (path == null) return false;
+        return PUBLIC_PATHS.stream().anyMatch(path::startsWith);
+    }
+
     @Override
     public GatewayFilter apply(Config config) {
         return (exchange, chain) -> {
             ServerHttpRequest request = exchange.getRequest();
+            String path = request.getURI().getPath();
+
+            // Bypass authentication for whitelisted public auth endpoints
+            if (isWhitelisted(path)) {
+                return chain.filter(exchange);
+            }
+
             String authHeader = request.getHeaders().getFirst(HttpHeaders.AUTHORIZATION);
 
             if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-                return unauthorized(exchange, "Thiếu Authorization header");
+                return unauthorized(exchange, "Thiếu Authorization header hoặc định dạng Bearer token");
             }
 
             String token = authHeader.substring(7);
@@ -86,4 +105,6 @@ public class JwtAuthenticationFilter extends AbstractGatewayFilterFactory<JwtAut
     /** Config class (required by AbstractGatewayFilterFactory) */
     public static class Config {
     }
+
+
 }

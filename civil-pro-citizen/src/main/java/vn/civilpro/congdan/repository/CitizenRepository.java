@@ -8,7 +8,7 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
-import vn.civilpro.congdan.entity.Citizen;
+import vn.civilpro.congdan.model.entity.Citizen;
 
 import java.time.LocalDate;
 import java.util.List;

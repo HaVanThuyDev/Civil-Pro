@@ -4,20 +4,25 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import vn.civilpro.common.enums.ErrorCode;
-import vn.civilpro.common.exception.DuplicateResourceException;
-import vn.civilpro.common.exception.ResourceNotFoundException;
-import vn.civilpro.congdan.dto.request.CreateCitizenRequest;
-import vn.civilpro.congdan.dto.request.SearchCitizenRequest;
-import vn.civilpro.congdan.dto.request.UpdateCitizenRequest;
-import vn.civilpro.congdan.dto.response.CitizenDetailResponse;
-import vn.civilpro.congdan.dto.response.CitizenSummaryResponse;
-import vn.civilpro.congdan.entity.Citizen;
-import vn.civilpro.congdan.event.CitizenEventPublisher;
+import vn.civilpro.congdan.event.CitizenCreatedEvent;
+import vn.civilpro.congdan.event.CitizenDeceasedEvent;
+import vn.civilpro.congdan.event.CitizenUpdatedEvent;
+import vn.civilpro.congdan.model.dto.response.PagedResult;
+import vn.civilpro.congdan.model.enums.ErrorCode;
+import vn.civilpro.congdan.exception.DuplicateResourceException;
+import vn.civilpro.congdan.exception.ResourceNotFoundException;
+import vn.civilpro.congdan.model.dto.request.CreateCitizenRequest;
+import vn.civilpro.congdan.model.dto.request.SearchCitizenRequest;
+import vn.civilpro.congdan.model.dto.request.UpdateCitizenRequest;
+import vn.civilpro.congdan.model.dto.response.CitizenDetailResponse;
+import vn.civilpro.congdan.model.dto.response.CitizenSummaryResponse;
+import vn.civilpro.congdan.model.entity.Citizen;
 import vn.civilpro.congdan.mapper.CitizenMapper;
 import vn.civilpro.congdan.repository.CitizenRepository;
 import vn.civilpro.congdan.service.CitizenService;
@@ -26,6 +31,15 @@ import vn.civilpro.congdan.util.VietnameseUtils;
 
 import java.time.LocalDate;
 
+/**
+ * Lưu ý về Kafka event: service này KHÔNG gọi trực tiếp Kafka publisher.
+ * Thay vào đó nó publish domain event nội bộ qua ApplicationEventPublisher
+ * (CitizenCreatedEvent / CitizenUpdatedEvent / CitizenDeceasedEvent).
+ * CitizenEventPublisher (trong package `event`) lắng nghe các event này bằng
+ * @TransactionalEventListener(phase = AFTER_COMMIT), tức là message chỉ thực
+ * sự được đẩy lên Kafka SAU KHI transaction DB commit thành công — tránh
+ * tình trạng dual-write (Kafka có event nhưng DB rollback).
+ */
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -34,7 +48,8 @@ public class CitizenServiceImpl implements CitizenService {
 
     private final CitizenRepository citizenRepository;
     private final CitizenMapper citizenMapper;
-    private final CitizenEventPublisher eventPublisher;
+    private final ApplicationEventPublisher applicationEventPublisher;
+    private final CitizenCodeGenerator citizenCodeGenerator;
 
     @Override
     @Transactional
@@ -47,13 +62,13 @@ public class CitizenServiceImpl implements CitizenService {
         }
 
         Citizen entity = citizenMapper.toEntity(request);
-        entity.setCitizenCode(CitizenCodeGenerator.generate());
+        entity.setCitizenCode(citizenCodeGenerator.generate());
         entity.setFullNameAscii(VietnameseUtils.removeAccent(request.getFullName()));
 
         Citizen saved = citizenRepository.save(entity);
         log.info("[CitizenService] Created citizen, ID: {}, Code: {}", saved.getId(), saved.getCitizenCode());
 
-        eventPublisher.publishCitizenCreated(saved);
+        applicationEventPublisher.publishEvent(new CitizenCreatedEvent(saved));
 
         return citizenMapper.toDetailResponse(saved);
     }
@@ -80,7 +95,7 @@ public class CitizenServiceImpl implements CitizenService {
 
         Citizen updated = citizenRepository.save(existing);
 
-        eventPublisher.publishCitizenUpdated(updated);
+        applicationEventPublisher.publishEvent(new CitizenUpdatedEvent(updated));
 
         return citizenMapper.toDetailResponse(updated);
     }
@@ -111,6 +126,14 @@ public class CitizenServiceImpl implements CitizenService {
     }
 
     @Override
+    public PagedResult<CitizenSummaryResponse> getAll(int page, int size) {
+        Page<Citizen> result = citizenRepository.findAll(PageRequest.of(page, size));
+        Page<CitizenSummaryResponse> mapped = result.map(citizenMapper::toSummaryResponse);
+
+        return new PagedResult<>(mapped.getContent(), mapped.getTotalElements(), page, size);
+    }
+
+    @Override
     @Transactional
     @CacheEvict(value = {"citizen", "idCardLookup"}, key = "#id")
     public void markAsDeceased(Long id, String reason) {
@@ -123,7 +146,7 @@ public class CitizenServiceImpl implements CitizenService {
 
         citizenRepository.save(citizen);
 
-        eventPublisher.publishCitizenDeceased(citizen);
+        applicationEventPublisher.publishEvent(new CitizenDeceasedEvent(citizen));
     }
 
     private Citizen findByIdOrThrow(Long id) {

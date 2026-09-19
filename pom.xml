@@ -75,6 +75,7 @@
     </dependencies>
 
     <modules>
+        <module>civil-pro-proto</module>
         <module>civil-pro-auth</module>
         <module>civil-pro-gateway</module>
         <module>civil-pro-citizen</module>
@@ -84,6 +85,7 @@
         <module>civil-pro-statistical</module>
         <module>registry</module>
         <module>config-server</module>
+        <module>civil-pro-pay</module>
     </modules>
 
     <dependencyManagement>
@@ -147,6 +149,12 @@
                 <groupId>org.mapstruct</groupId>
                 <artifactId>mapstruct</artifactId>
                 <version>${mapstruct.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>vn.civilpro</groupId>
+                <artifactId>civil-pro-proto</artifactId>
+                <version>${project.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
