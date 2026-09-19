@@ -1,0 +1,65 @@
+server:
+  port: 8085
+
+spring:
+  application:
+    name: fluctuations-service
+
+  datasource:
+    url: jdbc:mysql://localhost:3306/DB_BIEN_DONG?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Ho_Chi_Minh
+    username: root
+    password: ${MYSQL_PASSWORD:11032003}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    hikari:
+      pool-name: Fluctuations-HikariPool
+      maximum-pool-size: 10
+      minimum-idle: 3
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+    open-in-view: false
+
+  kafka:
+    bootstrap-servers: localhost:9092
+    consumer:
+      group-id: fluctuations-service
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties:
+        spring.json.trusted.packages: "*"
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka
+  instance:
+    prefer-ip-address: true
+
+civil-pro:
+  jwt:
+    secret: my-secret-key-123456789012345678901234
+    access-token-expiration: 86400000
+    refresh-token-expiration: 604800000
+  kafka:
+    topics:
+      citizen-created: citizen.created
+      citizen-deceased: citizen.deceased
+      household-events: household.events
+
+grpc:
+  server:
+    port: 9085
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus
+
+logging:
+  level:
+    vn.civilpro: DEBUG
+    org.springframework.security: WARN

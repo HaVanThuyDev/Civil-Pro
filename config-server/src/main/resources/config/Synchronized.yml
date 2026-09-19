@@ -1,0 +1,55 @@
+server:
+  port: 8088
+
+spring:
+  application:
+    name: synchronized-service
+
+  datasource:
+    url: jdbc:mysql://localhost:3306/DB_DONG_BO?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Ho_Chi_Minh
+    username: root
+    password: ${MYSQL_PASSWORD:11032003}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    hikari:
+      pool-name: Synchronized-HikariPool
+      maximum-pool-size: 10
+      minimum-idle: 3
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+    open-in-view: false
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka
+  instance:
+    prefer-ip-address: true
+
+civil-pro:
+  jwt:
+    secret: my-secret-key-123456789012345678901234
+    access-token-expiration: 86400000
+    refresh-token-expiration: 604800000
+
+grpc:
+  server:
+    port: 9088
+  client:
+    citizen-service:
+      address: discovery:///civil-pro-citizen
+      enable-keep-alive: true
+      negotiation-type: plaintext
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus
+
+logging:
+  level:
+    vn.civilpro: DEBUG
+    org.springframework.security: WARN
