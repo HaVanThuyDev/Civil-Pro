@@ -1,8 +1,3 @@
-# ====================================================================
-# CIVIL-PRO: HỆ THỐNG ĐIỀU PHỐI CONTAINER TOÀN DIỆN (DOCKER COMPOSE)
-# Chạy toàn bộ hệ sinh thái với lệnh duy nhất: docker compose up -d
-# ====================================================================
-
 networks:
   civil-network:
     driver: bridge
@@ -17,16 +12,13 @@ volumes:
     name: civil_kafka_data
 
 services:
-  # ==================================================================
-  # 1. TẦNG HẠ TẦNG: CƠ SỞ DỮ LIỆU, CACHE & MESSAGE BROKER
-  # ==================================================================
   civil-mysql:
     image: mysql:8.0
     container_name: civil-mysql
     hostname: civil-mysql
     restart: unless-stopped
     ports:
-      - "3306:3306"
+      - "3307:3306"
     environment:
       MYSQL_ROOT_PASSWORD: "11032003"
       TZ: "Asia/Ho_Chi_Minh"
@@ -85,9 +77,6 @@ services:
     networks:
       - civil-network
 
-  # ==================================================================
-  # 2. TẦNG NỀN TẢNG: SERVICE REGISTRY & CONFIG SERVER
-  # ==================================================================
   registry:
     build:
       context: ./registry
@@ -124,9 +113,6 @@ services:
     networks:
       - civil-network
 
-  # ==================================================================
-  # 3. TẦNG BIÊN MẠNG: API GATEWAY (PORT 8000)
-  # ==================================================================
   civil-pro-gateway:
     build:
       context: ./civil-pro-gateway
@@ -151,9 +137,6 @@ services:
     networks:
       - civil-network
 
-  # ==================================================================
-  # 4. TẦNG DỊCH VỤ NGHIỆP VỤ (CORE BUSINESS MICROSERVICES)
-  # ==================================================================
   civil-pro-auth:
     build:
       context: ./civil-pro-auth
@@ -163,11 +146,11 @@ services:
     hostname: civil-pro-auth
     restart: unless-stopped
     ports:
-      - "8081:6000"
+      - "8091:6000"
       - "9081:9102"
     depends_on:
       civil-mysql:
-        condition: service_healthy
+        condition: service_started
       registry:
         condition: service_started
       config-server:
@@ -195,7 +178,7 @@ services:
       - "9084:9101"
     depends_on:
       civil-mysql:
-        condition: service_healthy
+        condition: service_started
       registry:
         condition: service_started
       config-server:
@@ -225,12 +208,23 @@ services:
       - "8083:8083"
       - "9083:9083"
     depends_on:
-      - registry
-      - kafka
-      - civil-pro-citizen
+      civil-mysql:
+        condition: service_started
+      registry:
+        condition: service_started
+      config-server:
+        condition: service_started
+      kafka:
+        condition: service_started
+      civil-pro-citizen:
+        condition: service_started
     environment:
       SPRING_APPLICATION_NAME: household-service
+      SPRING_CONFIG_IMPORT: optional:configserver:http://config-server:8888
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://registry:8761/eureka/
+      SPRING_DATASOURCE_URL: jdbc:mysql://civil-mysql:3306/DB_HO_KHAU?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Ho_Chi_Minh
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: "11032003"
       SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
     networks:
       - civil-network
@@ -247,11 +241,21 @@ services:
       - "8085:8085"
       - "9085:9085"
     depends_on:
-      - registry
-      - kafka
+      civil-mysql:
+        condition: service_started
+      registry:
+        condition: service_started
+      config-server:
+        condition: service_started
+      kafka:
+        condition: service_started
     environment:
       SPRING_APPLICATION_NAME: fluctuations-service
+      SPRING_CONFIG_IMPORT: optional:configserver:http://config-server:8888
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://registry:8761/eureka/
+      SPRING_DATASOURCE_URL: jdbc:mysql://civil-mysql:3306/DB_BIEN_DONG?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Ho_Chi_Minh
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: "11032003"
       SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
     networks:
       - civil-network
@@ -268,12 +272,23 @@ services:
       - "8087:8087"
       - "9087:9087"
     depends_on:
-      - registry
-      - civil-pro-citizen
-      - civil-pro-household
+      civil-mysql:
+        condition: service_started
+      registry:
+        condition: service_started
+      config-server:
+        condition: service_started
+      civil-pro-citizen:
+        condition: service_started
+      civil-pro-household:
+        condition: service_started
     environment:
       SPRING_APPLICATION_NAME: statistical-service
+      SPRING_CONFIG_IMPORT: optional:configserver:http://config-server:8888
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://registry:8761/eureka/
+      SPRING_DATASOURCE_URL: jdbc:mysql://civil-mysql:3306/DB_THONG_KE?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Ho_Chi_Minh
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: "11032003"
     networks:
       - civil-network
 
@@ -289,11 +304,21 @@ services:
       - "8088:8088"
       - "9088:9088"
     depends_on:
-      - registry
-      - civil-pro-citizen
+      civil-mysql:
+        condition: service_started
+      registry:
+        condition: service_started
+      config-server:
+        condition: service_started
+      civil-pro-citizen:
+        condition: service_started
     environment:
       SPRING_APPLICATION_NAME: synchronized-service
+      SPRING_CONFIG_IMPORT: optional:configserver:http://config-server:8888
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://registry:8761/eureka/
+      SPRING_DATASOURCE_URL: jdbc:mysql://civil-mysql:3306/DB_DONG_BO?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Ho_Chi_Minh
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: "11032003"
     networks:
       - civil-network
 
@@ -309,12 +334,25 @@ services:
       - "8089:8089"
       - "9089:9089"
     depends_on:
-      - registry
-      - kafka
-      - civil-pro-auth
+      civil-mysql:
+        condition: service_started
+      registry:
+        condition: service_started
+      config-server:
+        condition: service_started
+      kafka:
+        condition: service_started
+      civil-pro-auth:
+        condition: service_started
     environment:
       SPRING_APPLICATION_NAME: payment-service
+      SPRING_CONFIG_IMPORT: optional:configserver:http://config-server:8888
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://registry:8761/eureka/
+      SPRING_DATASOURCE_URL: jdbc:mysql://civil-mysql:3306/DB_PAYMENT?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Ho_Chi_Minh
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: "11032003"
       SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
     networks:
       - civil-network
+
+
