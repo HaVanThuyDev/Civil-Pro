@@ -12,6 +12,7 @@ volumes:
     name: civil_kafka_data
 
 services:
+  # ── Infrastructure ──────────────────────────────────────────────
   civil-mysql:
     image: mysql:8.0
     container_name: civil-mysql
@@ -77,23 +78,7 @@ services:
     networks:
       - civil-network
 
-  registry:
-    build:
-      context: ./registry
-      dockerfile: Dockerfile
-    image: civil-pro/registry:1.0.0
-    container_name: registry
-    hostname: registry
-    restart: unless-stopped
-    ports:
-      - "8761:8761"
-    environment:
-      SPRING_APPLICATION_NAME: registry
-      EUREKA_CLIENT_REGISTER_WITH_EUREKA: "false"
-      EUREKA_CLIENT_FETCH_REGISTRY: "false"
-    networks:
-      - civil-network
-
+  # ── 1. Config Server (starts FIRST, no dependencies on registry) ──
   config-server:
     build:
       context: ./config-server
@@ -104,15 +89,46 @@ services:
     restart: unless-stopped
     ports:
       - "8888:8888"
-    depends_on:
-      - registry
     environment:
       SPRING_APPLICATION_NAME: config-server
       SPRING_PROFILES_ACTIVE: native
-      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://registry:8761/eureka/
     networks:
       - civil-network
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q --spider http://localhost:8888/actuator/health || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 20
+      start_period: 40s
 
+  # ── 2. Eureka Registry (starts AFTER config-server is healthy) ──
+  registry:
+    build:
+      context: ./registry
+      dockerfile: Dockerfile
+    image: civil-pro/registry:1.0.0
+    container_name: registry
+    hostname: registry
+    restart: unless-stopped
+    ports:
+      - "8761:8761"
+    depends_on:
+      config-server:
+        condition: service_healthy
+    environment:
+      SPRING_APPLICATION_NAME: registry
+      EUREKA_CLIENT_REGISTER_WITH_EUREKA: "false"
+      EUREKA_CLIENT_FETCH_REGISTRY: "false"
+    networks:
+      - civil-network
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q --spider http://localhost:8761/actuator/health || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 20
+      start_period: 40s
+
+  # ── 3. Gateway (starts AFTER config-server + registry are healthy) ──
   civil-pro-gateway:
     build:
       context: ./civil-pro-gateway
@@ -124,19 +140,23 @@ services:
     ports:
       - "8000:8000"
     depends_on:
-      - registry
-      - config-server
-      - civil-redis
+      config-server:
+        condition: service_healthy
+      registry:
+        condition: service_healthy
+      civil-redis:
+        condition: service_healthy
     environment:
       SPRING_APPLICATION_NAME: gateway
-      SPRING_CONFIG_IMPORT: configserver:http://config-server:8888
+      SPRING_CONFIG_IMPORT: optional:configserver:http://config-server:8888
+      EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE: http://registry:8761/eureka/
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://registry:8761/eureka/
       SPRING_DATA_REDIS_HOST: civil-redis
       SPRING_DATA_REDIS_PORT: 6379
-      CIVIL_PRO_JWT_SECRET: my-secret-key-123456789012345678901234
     networks:
       - civil-network
 
+  # ── 4. Auth Service ──
   civil-pro-auth:
     build:
       context: ./civil-pro-auth
@@ -149,15 +169,16 @@ services:
       - "8091:6000"
       - "9081:9102"
     depends_on:
-      civil-mysql:
-        condition: service_started
-      registry:
-        condition: service_started
       config-server:
-        condition: service_started
+        condition: service_healthy
+      registry:
+        condition: service_healthy
+      civil-mysql:
+        condition: service_healthy
     environment:
       SPRING_APPLICATION_NAME: civil-pro-auth
       SPRING_CONFIG_IMPORT: optional:configserver:http://config-server:8888
+      EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE: http://registry:8761/eureka/
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://registry:8761/eureka/
       SPRING_DATASOURCE_URL: jdbc:mysql://civil-mysql:3306/DB_AUTH?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Ho_Chi_Minh
       SPRING_DATASOURCE_USERNAME: root
@@ -165,6 +186,7 @@ services:
     networks:
       - civil-network
 
+  # ── 5. Citizen Service ──
   civil-pro-citizen:
     build:
       context: ./civil-pro-citizen
@@ -177,17 +199,18 @@ services:
       - "8082:5000"
       - "9084:9101"
     depends_on:
-      civil-mysql:
-        condition: service_started
-      registry:
-        condition: service_started
       config-server:
-        condition: service_started
+        condition: service_healthy
+      registry:
+        condition: service_healthy
+      civil-mysql:
+        condition: service_healthy
       kafka:
         condition: service_started
     environment:
       SPRING_APPLICATION_NAME: civil-pro-citizen
       SPRING_CONFIG_IMPORT: optional:configserver:http://config-server:8888
+      EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE: http://registry:8761/eureka/
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://registry:8761/eureka/
       SPRING_DATASOURCE_URL: jdbc:mysql://civil-mysql:3306/DB_CONG_DAN?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Ho_Chi_Minh
       SPRING_DATASOURCE_USERNAME: root
@@ -196,6 +219,7 @@ services:
     networks:
       - civil-network
 
+  # ── 6. Household Service ──
   civil-pro-household:
     build:
       context: ./civil-pro-household
@@ -208,19 +232,18 @@ services:
       - "8083:8083"
       - "9083:9083"
     depends_on:
-      civil-mysql:
-        condition: service_started
-      registry:
-        condition: service_started
       config-server:
-        condition: service_started
+        condition: service_healthy
+      registry:
+        condition: service_healthy
+      civil-mysql:
+        condition: service_healthy
       kafka:
-        condition: service_started
-      civil-pro-citizen:
         condition: service_started
     environment:
       SPRING_APPLICATION_NAME: household-service
       SPRING_CONFIG_IMPORT: optional:configserver:http://config-server:8888
+      EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE: http://registry:8761/eureka/
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://registry:8761/eureka/
       SPRING_DATASOURCE_URL: jdbc:mysql://civil-mysql:3306/DB_HO_KHAU?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Ho_Chi_Minh
       SPRING_DATASOURCE_USERNAME: root
@@ -229,6 +252,7 @@ services:
     networks:
       - civil-network
 
+  # ── 7. Fluctuations Service ──
   civil-pro-fluctuations:
     build:
       context: ./civil-pro-fluctuations
@@ -241,17 +265,18 @@ services:
       - "8085:8085"
       - "9085:9085"
     depends_on:
-      civil-mysql:
-        condition: service_started
-      registry:
-        condition: service_started
       config-server:
-        condition: service_started
+        condition: service_healthy
+      registry:
+        condition: service_healthy
+      civil-mysql:
+        condition: service_healthy
       kafka:
         condition: service_started
     environment:
       SPRING_APPLICATION_NAME: fluctuations-service
       SPRING_CONFIG_IMPORT: optional:configserver:http://config-server:8888
+      EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE: http://registry:8761/eureka/
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://registry:8761/eureka/
       SPRING_DATASOURCE_URL: jdbc:mysql://civil-mysql:3306/DB_BIEN_DONG?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Ho_Chi_Minh
       SPRING_DATASOURCE_USERNAME: root
@@ -260,6 +285,7 @@ services:
     networks:
       - civil-network
 
+  # ── 8. Statistical Service ──
   civil-pro-statistical:
     build:
       context: ./civil-pro-statistical
@@ -272,19 +298,16 @@ services:
       - "8087:8087"
       - "9087:9087"
     depends_on:
-      civil-mysql:
-        condition: service_started
-      registry:
-        condition: service_started
       config-server:
-        condition: service_started
-      civil-pro-citizen:
-        condition: service_started
-      civil-pro-household:
-        condition: service_started
+        condition: service_healthy
+      registry:
+        condition: service_healthy
+      civil-mysql:
+        condition: service_healthy
     environment:
       SPRING_APPLICATION_NAME: statistical-service
       SPRING_CONFIG_IMPORT: optional:configserver:http://config-server:8888
+      EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE: http://registry:8761/eureka/
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://registry:8761/eureka/
       SPRING_DATASOURCE_URL: jdbc:mysql://civil-mysql:3306/DB_THONG_KE?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Ho_Chi_Minh
       SPRING_DATASOURCE_USERNAME: root
@@ -292,6 +315,7 @@ services:
     networks:
       - civil-network
 
+  # ── 9. Synchronized Service ──
   civil-pro-synchronized:
     build:
       context: ./civil-pro-synchronized
@@ -304,17 +328,16 @@ services:
       - "8088:8088"
       - "9088:9088"
     depends_on:
-      civil-mysql:
-        condition: service_started
-      registry:
-        condition: service_started
       config-server:
-        condition: service_started
-      civil-pro-citizen:
-        condition: service_started
+        condition: service_healthy
+      registry:
+        condition: service_healthy
+      civil-mysql:
+        condition: service_healthy
     environment:
       SPRING_APPLICATION_NAME: synchronized-service
       SPRING_CONFIG_IMPORT: optional:configserver:http://config-server:8888
+      EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE: http://registry:8761/eureka/
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://registry:8761/eureka/
       SPRING_DATASOURCE_URL: jdbc:mysql://civil-mysql:3306/DB_DONG_BO?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Ho_Chi_Minh
       SPRING_DATASOURCE_USERNAME: root
@@ -322,6 +345,7 @@ services:
     networks:
       - civil-network
 
+  # ── 10. Payment Service ──
   civil-pro-pay:
     build:
       context: ./civil-pro-pay
@@ -334,19 +358,18 @@ services:
       - "8089:8089"
       - "9089:9089"
     depends_on:
-      civil-mysql:
-        condition: service_started
-      registry:
-        condition: service_started
       config-server:
-        condition: service_started
+        condition: service_healthy
+      registry:
+        condition: service_healthy
+      civil-mysql:
+        condition: service_healthy
       kafka:
-        condition: service_started
-      civil-pro-auth:
         condition: service_started
     environment:
       SPRING_APPLICATION_NAME: payment-service
       SPRING_CONFIG_IMPORT: optional:configserver:http://config-server:8888
+      EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE: http://registry:8761/eureka/
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://registry:8761/eureka/
       SPRING_DATASOURCE_URL: jdbc:mysql://civil-mysql:3306/DB_PAYMENT?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Ho_Chi_Minh
       SPRING_DATASOURCE_USERNAME: root
@@ -354,5 +377,3 @@ services:
       SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
     networks:
       - civil-network
-
-
