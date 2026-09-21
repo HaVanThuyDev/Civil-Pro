@@ -6,7 +6,7 @@ spring:
     name: civil-pro-auth
 
   datasource:
-    url: jdbc:mysql://localhost:3306/DB_AUTH?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Ho_Chi_Minh
+    url: jdbc:mysql://localhost:3306/db_auth?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Ho_Chi_Minh
     username: root
     password: 11032003
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -17,7 +17,7 @@ spring:
 
   jpa:
     hibernate:
-      ddl-auto: none
+      ddl-auto: update
     show-sql: false
     open-in-view: false
 

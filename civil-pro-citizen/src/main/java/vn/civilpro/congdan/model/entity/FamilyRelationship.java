@@ -8,12 +8,15 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
 
+import org.hibernate.annotations.DynamicUpdate;
+
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 @Entity
+@DynamicUpdate
 @EntityListeners(AuditingEntityListener.class)
 @Table(
         name = "family_relationships",
