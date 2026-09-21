@@ -21,6 +21,17 @@ spring:
     show-sql: false
     open-in-view: false
 
+  data:
+    redis:
+      host: ${SPRING_DATA_REDIS_HOST:civil-redis}
+      port: ${SPRING_DATA_REDIS_PORT:6379}
+
+  cache:
+    type: redis
+    redis:
+      time-to-live: 600000
+      cache-null-values: false
+
   kafka:
     bootstrap-servers: localhost:9092
     producer:

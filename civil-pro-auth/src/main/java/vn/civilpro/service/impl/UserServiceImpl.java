@@ -2,6 +2,9 @@ package vn.civilpro.service.impl;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.data.domain.*;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -41,6 +44,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional(readOnly = true)
+    @Cacheable(value = "user", key = "#id", unless = "#result == null")
     public User getById(Long id) {
         return userRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("User not found: " + id));
@@ -48,6 +52,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional(readOnly = true)
+    @Cacheable(value = "userUsernameLookup", key = "#username", unless = "#result == null")
     public User getByUsername(String username) {
         return userRepository.findByUsername(username)
                 .orElseThrow(() -> new RuntimeException("User not found: " + username));
@@ -80,6 +85,10 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
+    @Caching(evict = {
+        @CacheEvict(value = "user", key = "#id"),
+        @CacheEvict(value = "userUsernameLookup", allEntries = true)
+    })
     public User update(Long id, UpdateUserRequest request) {
         User user = getById(id);
 
@@ -105,6 +114,10 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
+    @Caching(evict = {
+        @CacheEvict(value = "user", key = "#id"),
+        @CacheEvict(value = "userUsernameLookup", allEntries = true)
+    })
     public void changePassword(Long id, ChangePasswordRequest request) {
         if (!request.getNewPassword().equals(request.getConfirmPassword()))
             throw new RuntimeException("Mật khẩu xác nhận không khớp");
@@ -120,6 +133,10 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
+    @Caching(evict = {
+        @CacheEvict(value = "user", key = "#id"),
+        @CacheEvict(value = "userUsernameLookup", allEntries = true)
+    })
     public void delete(Long id) {
         userRepository.delete(getById(id));
     }

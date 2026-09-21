@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -13,7 +14,9 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class HouseholdDetailResponse {
+public class HouseholdDetailResponse implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     private Long id;
     private String householdCode;

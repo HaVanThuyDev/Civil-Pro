@@ -177,6 +177,8 @@ services:
         condition: service_healthy
       civil-mysql:
         condition: service_healthy
+      civil-redis:
+        condition: service_healthy
     environment:
       SPRING_APPLICATION_NAME: civil-pro-auth
       SPRING_CONFIG_IMPORT: optional:configserver:http://config-server:8888
@@ -185,6 +187,8 @@ services:
       SPRING_DATASOURCE_URL: jdbc:mysql://host.docker.internal:3306/db_auth?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Ho_Chi_Minh
       SPRING_DATASOURCE_USERNAME: root
       SPRING_DATASOURCE_PASSWORD: "11032003"
+      SPRING_DATA_REDIS_HOST: civil-redis
+      SPRING_DATA_REDIS_PORT: 6379
     extra_hosts:
       - "host.docker.internal:host-gateway"
     networks:
@@ -209,6 +213,8 @@ services:
         condition: service_healthy
       civil-mysql:
         condition: service_healthy
+      civil-redis:
+        condition: service_healthy
       kafka:
         condition: service_started
     environment:
@@ -220,6 +226,8 @@ services:
       SPRING_DATASOURCE_USERNAME: root
       SPRING_DATASOURCE_PASSWORD: "11032003"
       SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+      SPRING_DATA_REDIS_HOST: civil-redis
+      SPRING_DATA_REDIS_PORT: 6379
     extra_hosts:
       - "host.docker.internal:host-gateway"
     networks:
@@ -244,6 +252,8 @@ services:
         condition: service_healthy
       civil-mysql:
         condition: service_healthy
+      civil-redis:
+        condition: service_healthy
       kafka:
         condition: service_started
     environment:
@@ -255,6 +265,8 @@ services:
       SPRING_DATASOURCE_USERNAME: root
       SPRING_DATASOURCE_PASSWORD: "11032003"
       SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+      SPRING_DATA_REDIS_HOST: civil-redis
+      SPRING_DATA_REDIS_PORT: 6379
     extra_hosts:
       - "host.docker.internal:host-gateway"
     networks:
@@ -314,6 +326,8 @@ services:
         condition: service_healthy
       civil-mysql:
         condition: service_healthy
+      civil-redis:
+        condition: service_healthy
     environment:
       SPRING_APPLICATION_NAME: statistical-service
       SPRING_CONFIG_IMPORT: optional:configserver:http://config-server:8888
@@ -322,6 +336,8 @@ services:
       SPRING_DATASOURCE_URL: jdbc:mysql://host.docker.internal:3306/db_thong_ke?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Ho_Chi_Minh
       SPRING_DATASOURCE_USERNAME: root
       SPRING_DATASOURCE_PASSWORD: "11032003"
+      SPRING_DATA_REDIS_HOST: civil-redis
+      SPRING_DATA_REDIS_PORT: 6379
     extra_hosts:
       - "host.docker.internal:host-gateway"
     networks:

@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -75,7 +76,10 @@ public class CitizenServiceImpl implements CitizenService {
 
     @Override
     @Transactional
-    @CacheEvict(value = {"citizen", "idCardLookup"}, key = "#id")
+    @Caching(evict = {
+        @CacheEvict(value = "citizen", key = "#id"),
+        @CacheEvict(value = "idCardLookup", allEntries = true)
+    })
     public CitizenDetailResponse update(Long id, UpdateCitizenRequest request) {
         log.info("[CitizenService] Updating citizen ID: {}", id);
 
@@ -135,7 +139,10 @@ public class CitizenServiceImpl implements CitizenService {
 
     @Override
     @Transactional
-    @CacheEvict(value = {"citizen", "idCardLookup"}, key = "#id")
+    @Caching(evict = {
+        @CacheEvict(value = "citizen", key = "#id"),
+        @CacheEvict(value = "idCardLookup", allEntries = true)
+    })
     public void markAsDeceased(Long id, String reason) {
         log.info("[CitizenService] Marking citizen as deceased ID: {}", id);
 

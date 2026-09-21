@@ -26,6 +26,17 @@ spring:
     locations: classpath:db/migration
     baseline-on-migrate: true
 
+  data:
+    redis:
+      host: ${SPRING_DATA_REDIS_HOST:civil-redis}
+      port: ${SPRING_DATA_REDIS_PORT:6379}
+
+  cache:
+    type: redis
+    redis:
+      time-to-live: 600000
+      cache-null-values: false
+
 civil-pro:
   jwt:
     secret: my-secret-key-123456789012345678901234

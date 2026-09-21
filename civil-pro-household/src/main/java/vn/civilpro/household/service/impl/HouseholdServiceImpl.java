@@ -4,6 +4,9 @@ import io.grpc.StatusRuntimeException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.devh.boot.grpc.client.inject.GrpcClient;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -106,6 +109,10 @@ public class HouseholdServiceImpl implements HouseholdService {
 
     @Override
     @Transactional
+    @Caching(evict = {
+        @CacheEvict(value = "household", key = "#id"),
+        @CacheEvict(value = "householdCodeLookup", allEntries = true)
+    })
     public HouseholdDetailResponse update(Long id, UpdateHouseholdRequest request) {
         Household household = findByIdOrThrow(id);
 
@@ -131,6 +138,10 @@ public class HouseholdServiceImpl implements HouseholdService {
 
     @Override
     @Transactional
+    @Caching(evict = {
+        @CacheEvict(value = "household", key = "#householdId"),
+        @CacheEvict(value = "householdMembers", allEntries = true)
+    })
     public void addMember(Long householdId, AddMemberRequest request) {
         Household household = findByIdOrThrow(householdId);
 
@@ -172,6 +183,10 @@ public class HouseholdServiceImpl implements HouseholdService {
 
     @Override
     @Transactional
+    @Caching(evict = {
+        @CacheEvict(value = "household", key = "#householdId"),
+        @CacheEvict(value = "householdMembers", allEntries = true)
+    })
     public void removeMember(Long householdId, Long citizenId, String reason) {
         HouseholdMember member = memberRepository.findByHouseholdIdAndCitizenIdAndStatus(householdId, citizenId, 1)
                 .orElseThrow(() -> new ResourceNotFoundException("HouseholdMember", citizenId));
@@ -187,12 +202,14 @@ public class HouseholdServiceImpl implements HouseholdService {
     }
 
     @Override
+    @Cacheable(value = "household", key = "#id", unless = "#result == null")
     public HouseholdDetailResponse getById(Long id) {
         Household household = findByIdOrThrow(id);
         return householdMapper.toDetailResponse(household);
     }
 
     @Override
+    @Cacheable(value = "householdCodeLookup", key = "#householdCode", unless = "#result == null")
     public HouseholdDetailResponse getByHouseholdCode(String householdCode) {
         Household household = householdRepository.findByHouseholdCode(householdCode)
                 .orElseThrow(() -> new ResourceNotFoundException("Household", householdCode));
@@ -207,6 +224,7 @@ public class HouseholdServiceImpl implements HouseholdService {
     }
 
     @Override
+    @Cacheable(value = "householdMembers", key = "#householdId + '-' + #activeOnly", unless = "#result == null")
     public List<HouseholdMemberResponse> getMembers(Long householdId, boolean activeOnly) {
         List<HouseholdMember> list = activeOnly
                 ? memberRepository.findByHouseholdIdAndStatus(householdId, 1)
