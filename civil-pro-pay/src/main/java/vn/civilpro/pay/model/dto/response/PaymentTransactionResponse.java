@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import vn.civilpro.pay.model.enums.PaymentMethod;
 import vn.civilpro.pay.model.enums.TransactionStatus;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
@@ -14,7 +15,9 @@ import java.time.LocalDateTime;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class PaymentTransactionResponse {
+public class PaymentTransactionResponse implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     private Long id;
     private String txnReference;

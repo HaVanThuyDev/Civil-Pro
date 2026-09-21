@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import vn.civilpro.pay.model.enums.LedgerEntryType;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
@@ -13,7 +14,9 @@ import java.time.LocalDateTime;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class LedgerEntryResponse {
+public class LedgerEntryResponse implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     private Long id;
     private Long transactionId;

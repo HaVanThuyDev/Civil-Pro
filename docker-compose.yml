@@ -394,6 +394,8 @@ services:
         condition: service_healthy
       civil-mysql:
         condition: service_healthy
+      civil-redis:
+        condition: service_healthy
       kafka:
         condition: service_started
     environment:
@@ -405,6 +407,8 @@ services:
       SPRING_DATASOURCE_USERNAME: root
       SPRING_DATASOURCE_PASSWORD: "11032003"
       SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+      SPRING_DATA_REDIS_HOST: civil-redis
+      SPRING_DATA_REDIS_PORT: 6379
     extra_hosts:
       - "host.docker.internal:host-gateway"
     networks:

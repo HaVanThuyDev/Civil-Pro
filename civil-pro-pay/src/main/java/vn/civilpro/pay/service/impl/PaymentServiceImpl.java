@@ -4,6 +4,9 @@ import io.grpc.StatusRuntimeException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.devh.boot.grpc.client.inject.GrpcClient;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -109,6 +112,10 @@ public class PaymentServiceImpl implements PaymentService {
 
     @Override
     @Transactional(isolation = Isolation.READ_COMMITTED)
+    @Caching(evict = {
+            @CacheEvict(value = "paymentOrder", key = "#request.orderCode"),
+            @CacheEvict(value = "paymentReceipt", key = "#request.orderCode")
+    })
     public PaymentReceiptResponse processPayment(ProcessPaymentRequest request) {
         log.info("[PaymentService] Processing payment orderCode: {}, idempotencyKey: {}, method: {}",
                 request.getOrderCode(), request.getIdempotencyKey(), request.getPaymentMethod());
@@ -246,6 +253,7 @@ public class PaymentServiceImpl implements PaymentService {
 
     @Override
     @Transactional(readOnly = true)
+    @Cacheable(value = "paymentOrder", key = "#orderCode", unless = "#result == null")
     public PaymentOrderResponse getOrderByCode(String orderCode) {
         PaymentOrder order = orderRepository.findByOrderCode(orderCode)
                 .orElseThrow(() -> new ResourceNotFoundException("Payment order not found: " + orderCode));
@@ -254,6 +262,7 @@ public class PaymentServiceImpl implements PaymentService {
 
     @Override
     @Transactional(readOnly = true)
+    @Cacheable(value = "paymentReceipt", key = "#orderCode", unless = "#result == null")
     public PaymentReceiptResponse getReceiptByOrderCode(String orderCode) {
         PaymentOrder order = orderRepository.findByOrderCode(orderCode)
                 .orElseThrow(() -> new ResourceNotFoundException("Payment order not found: " + orderCode));
@@ -286,6 +295,7 @@ public class PaymentServiceImpl implements PaymentService {
     }
 
     @Override
+    @Cacheable(value = "taxObligations", key = "#taxpayerNationalId + '-' + (#taxCode != null ? #taxCode : '')", unless = "#result == null")
     public List<TaxObligationResponse> getTaxObligations(String taxpayerNationalId, String taxCode) {
         log.info("[PaymentService] Fetching tax obligations for taxpayerNationalId: {}, taxCode: {}",
                 taxpayerNationalId, taxCode);
