@@ -39,7 +39,7 @@ spring:
 
 civil-pro:
   jwt:
-    secret: my-secret-key-1234567890123456789012348
+    secret: my-secret-key-123456789012345678901234
     access-token-expiration: 86400000
     refresh-token-expiration: 604800000
 
