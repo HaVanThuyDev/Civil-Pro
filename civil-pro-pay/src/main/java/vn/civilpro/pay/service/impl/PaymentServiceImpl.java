@@ -73,7 +73,7 @@ public class PaymentServiceImpl implements PaymentService {
     public void setAuthGrpcStub(AuthServiceGrpc.AuthServiceBlockingStub authGrpcStub) {
         this.authGrpcStub = authGrpcStub;
     }
-
+//khoiwri tạo gọi grpauthen đểxacscs thuc
     @Override
     @Transactional
     public PaymentOrderResponse createPaymentOrder(CreatePaymentOrderRequest request) {
@@ -111,7 +111,7 @@ public class PaymentServiceImpl implements PaymentService {
     }
 
     @Override
-    @Transactional(isolation = Isolation.READ_COMMITTED)
+    @Transactional(isolation = Isolation.READ_COMMITTED) // nghĩa là transaction hiện tại chỉ đọc được dữ liệu đã COMMIT bởi transaction khác.
     @Caching(evict = {
             @CacheEvict(value = "paymentOrder", key = "#request.orderCode"),
             @CacheEvict(value = "paymentReceipt", key = "#request.orderCode")
