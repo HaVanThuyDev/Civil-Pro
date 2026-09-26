@@ -96,12 +96,15 @@ public class CitizenServiceImpl implements CitizenService {
         if (request.getFullName() != null) {
             existing.setFullNameAscii(VietnameseUtils.removeAccent(request.getFullName()));
         }
+        String idCard = existing.getIdCardNumber();
+        log.info("idCardNumber = [{}], length = {}", idCard, idCard != null ? idCard.length() : 0);
 
         Citizen updated = citizenRepository.save(existing);
 
         applicationEventPublisher.publishEvent(new CitizenUpdatedEvent(updated));
 
         return citizenMapper.toDetailResponse(updated);
+
     }
 
     @Override
