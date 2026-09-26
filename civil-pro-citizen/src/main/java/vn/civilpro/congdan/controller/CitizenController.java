@@ -36,7 +36,7 @@ public class CitizenController {
         return ResponseEntity.ok(citizenService.getAll(page, size));
     }
 
-    @PostMapping({"", "/create"})
+    @PostMapping({"/create"})
 //    @PreAuthorize("hasAuthority('CITIZEN:CREATE')")
     public ResponseEntity<?> create(@Valid @RequestBody CreateCitizenRequest request) {
         citizenService.create(request);
@@ -47,10 +47,10 @@ public class CitizenController {
 //    @PreAuthorize("hasAuthority('CITIZEN:UPDATE')")
     public ResponseEntity<?> update(@PathVariable Long id, @Valid @RequestBody UpdateCitizenRequest request) {
         citizenService.update(id, request);
-        return ResponseEntity.ok("create success");
+        return ResponseEntity.ok("update success");
     }
 
-    @GetMapping({"/details{id}", "/details/{id}", "/{id}"})
+    @GetMapping({"/details{id}"})
 //    @PreAuthorize("hasAuthority('CITIZEN:READ')")
     public ResponseEntity<ApiResponse<CitizenDetailResponse>> getById(@PathVariable Long id) {
         return ResponseEntity.ok(ApiResponse.ok(citizenService.getById(id), "Get citizen details successfully"));
