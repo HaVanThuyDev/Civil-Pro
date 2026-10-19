@@ -27,8 +27,6 @@ import vn.civilpro.congdan.security.JwtAuthenticationFilter;
 public class SecurityConfig {
 
     private final JwtAuthenticationFilter jwtAuthFilter;
-
-    /** Các endpoint không cần authenticate */
     private static final String[] PUBLIC_ENDPOINTS = {
             "/actuator/health",
             "/actuator/info",

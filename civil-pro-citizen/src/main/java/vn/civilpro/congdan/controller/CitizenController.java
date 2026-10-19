@@ -5,6 +5,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import vn.civilpro.congdan.common.ApiResponse;
@@ -39,8 +41,12 @@ public class CitizenController {
     @PostMapping({"/create"})
 //    @PreAuthorize("hasAuthority('CITIZEN:CREATE')")
     public ResponseEntity<?> create(@Valid @RequestBody CreateCitizenRequest request) {
-        citizenService.create(request);
-        return ResponseEntity.ok("create success");
+        try {
+            citizenService.create(request);
+        }catch (Exception ex){
+            ResponseEntity.ok(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        return ResponseEntity.ok().build();
     }
 
     @PutMapping("/{id}")

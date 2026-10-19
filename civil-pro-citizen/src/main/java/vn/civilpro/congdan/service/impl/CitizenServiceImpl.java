@@ -29,7 +29,6 @@ import vn.civilpro.congdan.repository.CitizenRepository;
 import vn.civilpro.congdan.service.CitizenService;
 import vn.civilpro.congdan.util.CitizenCodeGenerator;
 import vn.civilpro.congdan.util.VietnameseUtils;
-
 import java.time.LocalDate;
 
 /**
@@ -82,7 +81,6 @@ public class CitizenServiceImpl implements CitizenService {
     })
     public CitizenDetailResponse update(Long id, UpdateCitizenRequest request) {
         log.info("[CitizenService] Updating citizen ID: {}", id);
-
         Citizen existing = findByIdOrThrow(id);
 
         if (request.getIdCardNumber() != null &&
